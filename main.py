@@ -169,4 +169,49 @@ def complete_task(task_id: TaskID):
     return {
         "message" : "Task Completed"
     }
+
+@app.post("/delete-task")
+def delete_task(task_id: TaskID):
+    with open("data/tasks.json", "r") as file:
+        tasks = json.load(file)
+         
+    for index, task in enumerate(tasks):
+        if task["id"] == task_id.id:
+            tasks.pop(index)
+            break
     
+    # ---------------------------OR--------------------------------    
+    # Alternative approach (without pop + enumerate)
+
+    # tasks = [
+    #     task
+    #     for task in tasks
+    #     if task["id"] != task_id.id
+    # ]
+
+    # This creates a new list containing all tasks
+    # except the one whose id matches task_id.id.
+    # More Pythonic, but the current enumerate + pop
+    # approach was kept for learning purposes.
+    
+    # ---------------------------OR------------------------------
+    # Alternative approach
+
+    # new_tasks = []
+
+    # for task in tasks:
+    #     if task["id"] != task_id.id:
+    #         new_tasks.append(task)
+
+    # tasks = new_tasks
+
+    # Keeps every task except the one being deleted.
+            
+    with open("data/tasks.json", "w") as file:
+        json.dump(tasks, file, indent = 4)
+    
+    return {
+        "message" : "Task Deleted"
+    }
+    
+        

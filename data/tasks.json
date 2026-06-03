@@ -25,11 +25,6 @@
         "completed": true
     },
     {
-        "id": 6,
-        "task": "Build GHOST",
-        "completed": false
-    },
-    {
         "id": 7,
         "task": "work on ghost",
         "completed": false
