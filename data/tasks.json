@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "task": "Learn DSA",
+        "completed": false
+    },
+    {
+        "id": 2,
+        "task": "work on ghost",
+        "completed": false
+    },
+    {
+        "id": 3,
+        "task": "Learn the theory on the working of GHOST",
+        "completed": false
+    },
+    {
+        "id": 4,
+        "task": "Learn FastAPI",
+        "completed": false
+    },
+    {
+        "id": 5,
+        "task": "do do do",
+        "completed": true
+    },
+    {
+        "id": 6,
+        "task": "Build GHOST",
+        "completed": false
+    },
+    {
+        "id": 7,
+        "task": "work on ghost",
+        "completed": false
+    },
+    {
+        "id": 8,
+        "task": "hello",
+        "completed": false
+    }
+]

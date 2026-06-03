@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHOST</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>GHOST 👻</h1>
+
+        <div id="chat-box"></div>
+
+        <input 
+            type="text" id="message" placeholder="Ask something..."
+        >
+
+        <button onclick="sendMessage()">
+            Send
+        </button>
+
+        <button onclick="clearMemory()">
+            Clear Memory
+        </button>
+
+        <input type="file" id = "pdfFile">
+        <button onclick="uploadPDF()">
+            Upload PDF
+        </button>
+        <p id = "pdf-status">
+            No PDF uploaded
+        </p>
+
+        <h2>Tasks</h2>
+        <div id="task-list"></div>
+
+        <input type="text" id="task-input" placeholder="Enter task...">
+
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
