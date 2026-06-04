@@ -8,3 +8,8 @@ __pycache__/
 
 .idea/
 .vscode/
+
+#Runetime Data
+data/chat_history.json
+data/tasks.json
+data/memory.json

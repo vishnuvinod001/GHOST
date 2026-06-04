@@ -22,27 +22,27 @@ Status: Stable
 
 Backend:
 
-* FastAPI
-* Python
+- FastAPI
+- Python
 
 LLM:
 
-* Ollama
-* Qwen3 8B
+- Ollama
+- Qwen3 8B
 
 Frontend:
 
-* HTML
-* CSS
-* JavaScript
+- HTML
+- CSS
+- JavaScript
 
 Storage:
 
-* JSON
+- JSON
 
 Document Processing:
 
-* PyPDF
+- PyPDF
 
 ---
 
@@ -52,9 +52,9 @@ Document Processing:
 
 Status: Complete
 
-* Local chat interface
-* Ollama integration
-* Qwen3 responses
+- Local chat interface
+- Ollama integration
+- Qwen3 responses
 
 ---
 
@@ -62,9 +62,9 @@ Status: Complete
 
 Status: Complete
 
-* chat_history.json
-* Conversation persistence
-* User information retention
+- chat_history.json
+- Conversation persistence
+- User information retention
 
 ---
 
@@ -72,8 +72,8 @@ Status: Complete
 
 Status: Complete
 
-* Clear Memory button
-* Memory reset
+- Clear Memory button
+- Memory reset
 
 ---
 
@@ -81,8 +81,8 @@ Status: Complete
 
 Status: Complete
 
-* Upload PDFs
-* Store locally
+- Upload PDFs
+- Store locally
 
 ---
 
@@ -90,8 +90,8 @@ Status: Complete
 
 Status: Complete
 
-* Extract text
-* Save extracted content
+- Extract text
+- Save extracted content
 
 ---
 
@@ -99,9 +99,9 @@ Status: Complete
 
 Status: Complete
 
-* Summarization
-* Question answering
-* Follow-up questions
+- Summarization
+- Question answering
+- Follow-up questions
 
 ---
 
@@ -109,9 +109,9 @@ Status: Complete
 
 Status: Complete
 
-* Removed duplicate PDF storage
-* Faster responses
-* Better memory usage
+- Removed duplicate PDF storage
+- Faster responses
+- Better memory usage
 
 ---
 
@@ -119,12 +119,12 @@ Status: Complete
 
 Status: Complete
 
-* Dark mode
-* Chat bubbles
-* Auto-scroll
-* Thinking indicator
-* PDF status display
-* GHOST branding
+- Dark mode
+- Chat bubbles
+- Auto-scroll
+- Thinking indicator
+- PDF status display
+- GHOST branding
 
 ---
 
@@ -158,18 +158,18 @@ User Message
 
 # Current Working Features
 
-* Chat
-* Persistent Memory
-* Memory Clearing
-* PDF Upload
-* PDF Text Extraction
-* PDF Q&A
-* Optimized Context Handling
-* Dark Mode
-* Chat Bubbles
-* Auto Scroll
-* Thinking Indicator
-* PDF Status Display
+- Chat
+- Persistent Memory
+- Memory Clearing
+- PDF Upload
+- PDF Text Extraction
+- PDF Q&A
+- Optimized Context Handling
+- Dark Mode
+- Chat Bubbles
+- Auto Scroll
+- Thinking Indicator
+- PDF Status Display
 
 ---
 
@@ -181,11 +181,11 @@ Task System
 
 Planned:
 
-* Add task
-* View tasks
-* Complete task
-* Delete task
-* Persistent task storage
+- Add task
+- View tasks
+- Complete task
+- Delete task
+- Persistent task storage
 
 Status:
 Not Started
@@ -196,112 +196,174 @@ Not Started
 
 ## Productivity
 
-* Task Management
-* Reminders
-* Goal Tracking
-* Project Tracking
-* Daily Planning
-* Study Planning
-* Habit Tracking
-* Workout Tracking
+- Task Management
+- Reminders
+- Goal Tracking
+- Project Tracking
+- Daily Planning
+- Study Planning
+- Habit Tracking
+- Workout Tracking
 
 ---
 
 ## Memory System
 
-* Personal Memory
-* Preference Memory
-* Long-Term Memory
-* Structured Memory Categories
-* Memory Search
-* Memory Editing
-* Contextual Recall
+- Personal Memory
+- Preference Memory
+- Long-Term Memory
+- Structured Memory Categories
+- Memory Search
+- Memory Editing
+- Contextual Recall
 
 ---
 
+## Memory Intelligence Upgrade
+
+Status: Planned
+
+Goals:
+
+- Memory Extraction from Conversations
+- Structured Memory Categories
+- Automatic Memory Deduplication
+- Memory Retrieval During Conversations
+- Context-Aware Personalization
+
+New Features:
+
+- Explicit Memory Commands
+  - "Remember this"
+  - "Save this"
+  - "Store this information"
+  - "Don't forget this"
+
+Behavior:
+
+- If the user explicitly asks GHOST to remember information, GHOST should prioritize storing the relevant facts even if they would not normally be considered important.
+
+Examples:
+
+User:
+"Remember that I am building GHOST from scratch."
+
+Memory:
+{
+"type": "project",
+"value": "Building GHOST from scratch"
+}
+
+User:
+"You are GHOST and I am your creator. Save this."
+
+Memory:
+{
+"type": "relationship",
+"value": "User is building GHOST from scratch"
+}
+
+Future Features:
+
+- Memory Search
+- Memory Editing
+- Memory Deletion
+- Memory Importance Scoring
+- Memory Summarization
+- User-Controlled Memory Management
+- Memory Categories:
+  - name
+  - education
+  - project
+  - goal
+  - interest
+  - preference
+  - skill
+  - relationship
+
 ## Knowledge System
 
-* Multiple PDFs
-* Knowledge Base
-* Semantic Search
-* RAG
-* Notes Storage
-* Research Repository
-* Learning Repository
+- Multiple PDFs
+- Knowledge Base
+- Semantic Search
+- RAG
+- Notes Storage
+- Research Repository
+- Learning Repository
 
 ---
 
 ## Internet & API Integration
 
-* Google Search
-* News Updates
-* Weather
-* Stock Market
-* Crypto Prices
-* Sports Scores
-* YouTube Search
-* Wikipedia Search
-* Live Web Information
+- Google Search
+- News Updates
+- Weather
+- Stock Market
+- Crypto Prices
+- Sports Scores
+- YouTube Search
+- Wikipedia Search
+- Live Web Information
 
 ---
 
 ## Maps & Live Data
 
-* Interactive Maps
-* Live World Events
-* Weather Maps
-* Flight Tracking
-* Traffic Data
-* Location-Based Information
-* Geographic Visualization
+- Interactive Maps
+- Live World Events
+- Weather Maps
+- Flight Tracking
+- Traffic Data
+- Location-Based Information
+- Geographic Visualization
 
 ---
 
 ## Voice System
 
-* Speech-to-Text
-* Text-to-Speech
-* Voice Conversations
-* Voice Commands
-* Wake Word Detection
+- Speech-to-Text
+- Text-to-Speech
+- Voice Conversations
+- Voice Commands
+- Wake Word Detection
 
 ---
 
 ## AI Capabilities
 
-* Summarization
-* Research Assistance
-* Coding Assistance
-* Learning Assistance
-* Personal Recommendations
-* Decision Support
-* Project Assistance
+- Summarization
+- Research Assistance
+- Coding Assistance
+- Learning Assistance
+- Personal Recommendations
+- Decision Support
+- Project Assistance
 
 ---
 
 ## Personal Life Management
 
-* Expense Tracking
-* Finance Tracking
-* Budget Planning
-* Habit Tracking
-* Workout Tracking
-* Study Tracking
-* Personal Analytics
+- Expense Tracking
+- Finance Tracking
+- Budget Planning
+- Habit Tracking
+- Workout Tracking
+- Study Tracking
+- Personal Analytics
 
 ---
 
 ## Dashboard & UI Vision
 
-* Dynamic Dashboard
-* Floating Panels
-* Animated Widgets
-* Expandable Modules
-* Real-Time Data Panels
-* Interactive Visualizations
-* Live Information Cards
-* Drag-and-Drop Layouts
-* Modular Workspace
+- Dynamic Dashboard
+- Floating Panels
+- Animated Widgets
+- Expandable Modules
+- Real-Time Data Panels
+- Interactive Visualizations
+- Live Information Cards
+- Drag-and-Drop Layouts
+- Modular Workspace
 
 ---
 
@@ -309,12 +371,12 @@ Not Started
 
 Goals:
 
-* Animated UI
-* Smooth transitions
-* Floating information panels
-* Dynamic dashboards
-* Interactive modules
-* Real-time updates
+- Animated UI
+- Smooth transitions
+- Floating information panels
+- Dynamic dashboards
+- Interactive modules
+- Real-time updates
 
 Note:
 
@@ -327,15 +389,15 @@ Useful, modern, responsive interface.
 
 ## Advanced Features
 
-* Auto-start on Boot
-* Local Knowledge Base
-* Tool Calling
-* Workflow Automation
-* Agentic Behaviors
-* Multi-Model Support
-* Plugin System
-* Local Server Deployment
-* Mobile Companion App
+- Auto-start on Boot
+- Local Knowledge Base
+- Tool Calling
+- Workflow Automation
+- Agentic Behaviors
+- Multi-Model Support
+- Plugin System
+- Local Server Deployment
+- Mobile Companion App
 
 ---
 
@@ -345,9 +407,9 @@ Useful, modern, responsive interface.
 
 Memory Upgrade
 
-* Personal memory
-* Structured memory
-* Preference tracking
+- Personal memory
+- Structured memory
+- Preference tracking
 
 ---
 
@@ -355,9 +417,9 @@ Memory Upgrade
 
 Knowledge Base
 
-* Multiple documents
-* Search
-* Retrieval
+- Multiple documents
+- Search
+- Retrieval
 
 ---
 
@@ -365,9 +427,9 @@ Knowledge Base
 
 Voice Assistant
 
-* STT
-* TTS
-* Voice conversations
+- STT
+- TTS
+- Voice conversations
 
 ---
 
@@ -375,23 +437,23 @@ Voice Assistant
 
 Personal Companion
 
-* Memory
-* Tasks
-* Knowledge Base
-* Voice
-* Daily Workflow Support
+- Memory
+- Tasks
+- Knowledge Base
+- Voice
+- Daily Workflow Support
 
 ---
 
 # Design Principles
 
-* Local-first whenever possible
-* Privacy focused
-* Modular architecture
-* Expandable system
-* Useful before beautiful
-* Features before visual effects
-* Simplicity before complexity
+- Local-first whenever possible
+- Privacy focused
+- Modular architecture
+- Expandable system
+- Useful before beautiful
+- Features before visual effects
+- Simplicity before complexity
 
 ---
 
@@ -399,11 +461,11 @@ Personal Companion
 
 GHOST responses should:
 
-* Feel conversational
-* Avoid excessive markdown
-* Avoid clutter
-* Use clean formatting
-* Prioritize readability
+- Feel conversational
+- Avoid excessive markdown
+- Avoid clutter
+- Use clean formatting
+- Prioritize readability
 
 ---
 
@@ -411,22 +473,22 @@ GHOST responses should:
 
 Current State:
 
-* Project renamed from AI Study Assistant to GHOST
-* New virtual environment created
-* FastAPI working
-* Ollama working
-* Qwen3 working
-* Memory system working
-* PDF system working
-* UI improvements completed
+- Project renamed from AI Study Assistant to GHOST
+- New virtual environment created
+- FastAPI working
+- Ollama working
+- Qwen3 working
+- Memory system working
+- PDF system working
+- UI improvements completed
 
 Files To Upload In Future Chats:
 
-* PROJECT_STATUS.md
-* main.py
-* index.html
-* style.css
-* script.js
+- PROJECT_STATUS.md
+- main.py
+- index.html
+- style.css
+- script.js
 
 Immediate Next Task:
 

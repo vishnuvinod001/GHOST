@@ -10,6 +10,10 @@ import os
 import ollama
 import json
 
+class MemoryResponse(BaseModel):
+    remember: bool
+    memories: list
+
 
 with open("data/chat_history.json", "r") as file:
     conversation_history = json.load(file)
@@ -45,10 +49,96 @@ def chat(message: Message):
         }
     )
     
+    memory_prompt = f"""You are a memory extraction system.
+    
+    Analyze the user's message.
+    
+    If it contains important long-term information about the user, extract it.
+    
+    Examples:
+    
+    "My name is Vishnu" -> name
+    "I want to become an AI Engineer" -> goal
+    I am building GHOST" -> project
+    "I ate dosa today" -> not important
+    
+    Return ONLY valid JSON.
+    
+    Format:
+    
+    {{
+        "remember" : true,
+        "memories" : [
+            {{
+                "type" : "name",
+                "value" : "Vishnu"
+            }}
+        ]
+    }}
+    
+    User message: 
+    {message.text}
+    
+    """
+    
+    memory_response = ollama.chat(
+        model = "qwen3:8b",
+        messages = [
+            {
+                "role" : "user",
+                "content" : memory_prompt
+            }
+        ]
+    )
+    
+    memory_reply = memory_response["message"]["content"]
+    #print(memory_reply)
+    
+    memory_data = json.loads(memory_reply)
+    #print(type(memory_data))
+    #print(memory_data)
+    
+    with open("data/memory.json", "r") as file:
+        existing_memories = json.load(file)
+        
+    memory_text = ""
+
+    for memory in existing_memories:
+        memory_text += f'- {memory["type"]}: {memory["value"]}\n'
+
+    #print(memory_text)
+        
+    if memory_data["remember"]:
+        for memory in memory_data["memories"]:
+                
+            duplicate_found = False
+            for existing_memory in existing_memories:
+                if (
+                    memory["type"].lower() == existing_memory["type"].lower()
+                    and
+                    memory["value"].lower() == existing_memory["value"].lower()
+                ):
+                    duplicate_found = True
+                    break
+        if not duplicate_found:
+            existing_memories.append(memory)
+    
+    with open("data/memory.json", "w") as file:
+        json.dump(existing_memories, file, indent = 4)
+    
+    #print(existing_memories)
+    
+    #print(type(existing_memories))
+    #print(existing_memories)
+    
     messages_for_model = [
         {
             "role" : "system",
             "content" : f"""
+            
+            User Memories:
+            {memory_text}
+            
             Use the following document to answer questions.
             
             {pdf_text}
