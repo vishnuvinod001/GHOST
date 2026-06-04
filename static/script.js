@@ -100,6 +100,10 @@ async function loadTasks() {
           onchange = "completeTask(${task.id})"
       >
       ${task.task}
+
+      <button onclick = "deleteTask(${task.id})">
+        🗑
+      </button>
     </div>
     `;
   });
@@ -135,6 +139,22 @@ async function addTask() {
 
 async function completeTask(id) {
   const response = await fetch("/complete-task", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: id,
+    }),
+  });
+
+  const data = await response.json();
+  console.log(data);
+  loadTasks();
+}
+
+async function deleteTask(id) {
+  const response = await fetch("/delete-task", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
