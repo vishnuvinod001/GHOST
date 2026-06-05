@@ -13,3 +13,4 @@ __pycache__/
 data/chat_history.json
 data/tasks.json
 data/memory.json
+ghost.db

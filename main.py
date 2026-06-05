@@ -9,6 +9,19 @@ from pypdf import PdfReader
 import os
 import ollama
 import json
+import sqlite3
+
+conn = sqlite3.connect("ghost.db", check_same_thread = False)
+cursor = conn.cursor()
+
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS tasks (
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   task TEXT NOT NULL,
+                   completed INTEGER DEFAULT 0
+                )
+                """)
+conn.commit()
 
 class MemoryResponse(BaseModel):
     remember: bool
@@ -97,7 +110,24 @@ def chat(message: Message):
     "store this"
     "don't forget this"
     
+    Treat these as instructions.
+    
+    Extract only the information that follows,
+    not the command itself.
+    
     then prioritize storing the relevant information.
+    
+    "Remember that I am pursuing MCA"
+    → education
+
+    "Save that I want to become an AI Engineer"
+    → goal
+
+    "Don't forget that I prefer Python"
+    → preference
+
+    "Store the fact that I am building GHOST"
+    → project
     
     Return ONLY valid JSON.
     
@@ -251,30 +281,48 @@ class Task(BaseModel):
     
 @app.post("/add-task")
 def add_task(task: Task):
-    with open("data/tasks.json", "r") as file:
-        tasks = json.load(file)
-            
-    new_task = {
-        "id" : len(tasks) + 1,
-        "task" : task.task,
-        "completed" : False
-    }
-        
-    tasks.append(new_task)
-        
-    with open("data/tasks.json", "w") as file:
-        json.dump(tasks, file, indent = 4)
-        
-    return {
+    
+    cursor.execute(
+    """
+    INSERT INTO tasks
+    (task, completed)
+    VALUES (?, ?)
+    """,
+    (
+        task.task,
+        0
+     )
+    )
+    
+    conn.commit()
+    
+    cursor.execute("SELECT * FROM tasks")
+    print(cursor.fetchall()
+          )
+    return{
         "message" : "Task Added"
     }
 
 @app.get("/tasks")
 def get_tasks():
     
-    with open("data/tasks.json", "r") as file:
-        tasks = json.load(file)
-        
+    cursor.execute(
+    """
+    SELECT * FROM tasks
+    """
+    )
+    rows = cursor.fetchall()
+    
+    tasks = []
+    
+    for row in rows:
+        tasks.append(
+            {
+                "id" : row[0],
+                "task" : row[1],
+                "completed" : bool(row[2])
+            }
+        )
     return tasks
 
 class TaskID(BaseModel):
@@ -283,59 +331,35 @@ class TaskID(BaseModel):
 @app.post("/complete-task")
 def complete_task(task_id: TaskID):
     
-    with open("data/tasks.json", "r") as file:
-        tasks = json.load(file)
-    
-    for task in tasks:
-        if task["id"] == task_id.id:
-            task["completed"] = not task["completed"]
-    
-    with open("data/tasks.json", "w") as file:
-        json.dump(tasks, file, indent = 4)
-    
-    return {
+    cursor.execute(
+        """
+        UPDATE tasks
+        SET completed = NOT completed
+        WHERE id = ?
+        """,
+        (
+            task_id.id,
+        )
+    )
+    conn.commit()
+    return{
         "message" : "Task Completed"
     }
 
 @app.post("/delete-task")
 def delete_task(task_id: TaskID):
-    with open("data/tasks.json", "r") as file:
-        tasks = json.load(file)
-         
-    for index, task in enumerate(tasks):
-        if task["id"] == task_id.id:
-            tasks.pop(index)
-            break
     
-    # ---------------------------OR--------------------------------    
-    # Alternative approach (without pop + enumerate)
-
-    # tasks = [
-    #     task
-    #     for task in tasks
-    #     if task["id"] != task_id.id
-    # ]
-
-    # This creates a new list containing all tasks
-    # except the one whose id matches task_id.id.
-    # More Pythonic, but the current enumerate + pop
-    # approach was kept for learning purposes.
+    cursor.execute(
+        """
+        DELETE FROM tasks
+        WHERE id = ?
+        """,
+        (
+            task_id.id,
+        )
+    )
     
-    # ---------------------------OR------------------------------
-    # Alternative approach
-
-    # new_tasks = []
-
-    # for task in tasks:
-    #     if task["id"] != task_id.id:
-    #         new_tasks.append(task)
-
-    # tasks = new_tasks
-
-    # Keeps every task except the one being deleted.
-            
-    with open("data/tasks.json", "w") as file:
-        json.dump(tasks, file, indent = 4)
+    conn.commit()
     
     return {
         "message" : "Task Deleted"
