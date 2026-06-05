@@ -55,12 +55,49 @@ def chat(message: Message):
     
     If it contains important long-term information about the user, extract it.
     
+    Important memory categories :
+    
+    - name
+    - education
+    - goal
+    - project
+    - interest
+    - preference
+    - skill
+    - relationship
+    
     Examples:
     
     "My name is Vishnu" -> name
+
+    "I am pursuing MCA" -> education
+
+    "I have a Physics degree" -> education
+
     "I want to become an AI Engineer" -> goal
-    I am building GHOST" -> project
+
+    "I am building GHOST" -> project
+
+    "I am interested in Machine Learning" -> interest
+
+    "I prefer Python over Java" -> preference
+
+    "I know FastAPI and Python" -> skill
+
+    "I am building GHOST from scratch" -> project
+
+    "You are GHOST and I am building you" -> relationship
+
     "I ate dosa today" -> not important
+    
+    
+    If the user explicitly says:
+    "remember this"
+    "save this"
+    "store this"
+    "don't forget this"
+    
+    then prioritize storing the relevant information.
     
     Return ONLY valid JSON.
     
