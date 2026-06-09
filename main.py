@@ -44,23 +44,6 @@ cursor.execute("""
                 """)
 conn.commit()
 
-with open("data/memory.json", "r") as file:
-    memories = json.load(file)
-    
-for memory in memories:
-    cursor.execute(
-        """
-        INSERT OR IGNORE INTO memories
-        (type, value)
-        VALUES (?, ?)
-        """,
-            (
-               memory["type"],
-              memory["value"]
-            )
-        )
-conn.commit()
-    
 
 # ==============================================================
 # PYDANTIC MODELS
