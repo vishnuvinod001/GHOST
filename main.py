@@ -1,3 +1,7 @@
+# ==============================================================
+# IMPORTS
+# ==============================================================
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -6,13 +10,20 @@ from fastapi import Request
 from pydantic import BaseModel
 from fastapi import UploadFile, File
 from pypdf import PdfReader
-import os
 import ollama
 import json
 import sqlite3
 
+# ==============================================================
+# DATABASE SETUP
+# ==============================================================
+
 conn = sqlite3.connect("ghost.db", check_same_thread = False)
 cursor = conn.cursor()
+
+# ==============================================================
+# TABLE CREATION
+# ==============================================================
 
 cursor.execute("""
                CREATE TABLE IF NOT EXISTS tasks (
@@ -23,13 +34,57 @@ cursor.execute("""
                 """)
 conn.commit()
 
-class MemoryResponse(BaseModel):
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS memories (
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   type TEXT NOT NULL,
+                   value TEXT NOT NULL,
+                   UNIQUE(type, value)
+                )
+                """)
+conn.commit()
+
+with open("data/memory.json", "r") as file:
+    memories = json.load(file)
+    
+for memory in memories:
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO memories
+        (type, value)
+        VALUES (?, ?)
+        """,
+            (
+               memory["type"],
+              memory["value"]
+            )
+        )
+conn.commit()
+    
+
+# ==============================================================
+# PYDANTIC MODELS
+# ==============================================================
+class MemoryResponse(BaseModel): # Future validation model for memory extraction
     remember: bool
     memories: list
+    
+class Message(BaseModel):
+    text: str
+    
+class Task(BaseModel):
+    task: str
+    
+class TaskID(BaseModel):
+    id: int
 
 
 with open("data/chat_history.json", "r") as file:
     conversation_history = json.load(file)
+    
+# ==============================================================
+# APP CONFIGURATION
+# ==============================================================
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory = "static"), name = "static")
@@ -37,8 +92,9 @@ app.mount("/static", StaticFiles(directory = "static"), name = "static")
 templates = Jinja2Templates(directory = "templates")
 
 
-class Message(BaseModel):
-    text: str
+# ==============================================================
+# MAIN CHAT ROUTES
+# ==============================================================
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -165,13 +221,28 @@ def chat(message: Message):
     #print(type(memory_data))
     #print(memory_data)
     
-    with open("data/memory.json", "r") as file:
-        existing_memories = json.load(file)
-        
+    cursor.execute(
+    """
+    SELECT type, value
+    FROM memories
+    """
+    )
+    
+    rows = cursor.fetchall()
+    
+    existing_memories = []
+    
     memory_text = ""
-
-    for memory in existing_memories:
-        memory_text += f'- {memory["type"]}: {memory["value"]}\n'
+    
+    for row in rows:
+        existing_memories.append(
+            {
+                "type": row[0],
+                "value": row[1]
+            }
+        )
+        
+        memory_text += f"- {row[0]}: {row[1]}\n"
 
     #print(memory_text)
         
@@ -187,11 +258,21 @@ def chat(message: Message):
                 ):
                     duplicate_found = True
                     break
-        if not duplicate_found:
-            existing_memories.append(memory)
-    
-    with open("data/memory.json", "w") as file:
-        json.dump(existing_memories, file, indent = 4)
+            if not duplicate_found:
+                
+                cursor.execute(
+                    """INSERT INTO memories
+                    (type, value)
+                    VALUES (?, ?)
+                    """,
+                    (
+                        memory["type"],
+                        memory["value"]
+                    )
+                )
+                
+                conn.commit()
+                existing_memories.append(memory)
     
     #print(existing_memories)
     
@@ -253,6 +334,10 @@ def clear_memory():
     return {"message" : "Memory Cleared"}
 
 
+# ==============================================================
+# PDF ROUTES
+# ==============================================================
+
 @app.post("/upload-pdf")
 def upload_pdf(file: UploadFile = File(...)):
     
@@ -275,10 +360,10 @@ def upload_pdf(file: UploadFile = File(...)):
         "message" : "PDF Uploaded successfully"
     }
     
-    
-class Task(BaseModel):
-    task: str
-    
+# ==============================================================
+# TASK ROUTES
+# ==============================================================   
+
 @app.post("/add-task")
 def add_task(task: Task):
     
@@ -296,12 +381,10 @@ def add_task(task: Task):
     
     conn.commit()
     
-    cursor.execute("SELECT * FROM tasks")
-    print(cursor.fetchall()
-          )
     return{
         "message" : "Task Added"
     }
+
 
 @app.get("/tasks")
 def get_tasks():
@@ -325,8 +408,6 @@ def get_tasks():
         )
     return tasks
 
-class TaskID(BaseModel):
-    id: int
 
 @app.post("/complete-task")
 def complete_task(task_id: TaskID):
@@ -346,6 +427,7 @@ def complete_task(task_id: TaskID):
         "message" : "Task Completed"
     }
 
+
 @app.post("/delete-task")
 def delete_task(task_id: TaskID):
     
@@ -363,6 +445,4 @@ def delete_task(task_id: TaskID):
     
     return {
         "message" : "Task Deleted"
-    }
-    
-        
+    }  
