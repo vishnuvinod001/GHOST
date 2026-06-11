@@ -44,6 +44,23 @@ cursor.execute("""
                 """)
 conn.commit()
 
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS chat_history (
+                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     role TEXT NOT NULL,
+                     content TEXT NOT NULL
+                 )
+                 """)
+conn.commit()
+
+#cursor.execute(
+#        """
+#        DELETE FROM memories
+#        WHERE type = "goal"
+#        """
+#    )
+#conn.commit()
+
 
 # ==============================================================
 # PYDANTIC MODELS
@@ -62,8 +79,7 @@ class TaskID(BaseModel):
     id: int
 
 
-with open("data/chat_history.json", "r") as file:
-    conversation_history = json.load(file)
+
     
 # ==============================================================
 # APP CONFIGURATION
@@ -94,12 +110,19 @@ def chat(message: Message):
     ) as file:
         pdf_text = file.read()
     
-    conversation_history.append(
-        {
-            "role" : "user",
-            "content" : message.text
-        }
-    )
+    cursor.execute(
+        """
+        INSERT INTO chat_history
+        (role, content)
+        VALUES (?, ?)
+        """,
+        (
+            "user",
+            message.text
+        )
+     )
+    
+    conn.commit()
     
     memory_prompt = f"""You are a memory extraction system.
     
@@ -262,10 +285,84 @@ def chat(message: Message):
     #print(type(existing_memories))
     #print(existing_memories)
     
+    
+    if message.text.lower() == "what do you know about me?":
+
+        reply = ""
+
+        for memory in existing_memories:
+            reply += (
+                f"{memory['type'].capitalize()}: "
+                f"{memory['value']}\n\n"
+            )
+
+        return {
+            "reply": reply
+        }
+    
+    
+    cursor.execute(
+        """
+        SELECT role, content
+        FROM chat_history
+        ORDER BY id
+        """
+    )
+    
+    rows = cursor.fetchall()
+    
+    conversation_history = []
+    
+    for row in rows:
+        conversation_history.append(
+            {
+                "role": row[0],
+                "content": row[1]
+            }
+        )
+    
     messages_for_model = [
         {
             "role" : "system",
             "content" : f"""
+            
+            
+            You are GHOST, a personal AI assistant.
+            
+            Avoid markdown formatting.
+            Do not use **bold**, *, #, bullet lists, or emojis unless specifically requested.
+            Respond in clean plain text with simple spacing.
+            Keep responses professional and easy to read.
+            
+            When asked about user memories,
+            present the information in separate short sections.
+
+            Example:
+
+            Name: Vishnu Vinod
+
+            Goal: Become an AI Engineer
+
+            Current Project: GHOST
+
+            Skills: FastAPI
+            
+            Family information is secondary context.
+
+            Do not mention family members unless:
+            - the user asks about them
+            - they are directly relevant to the conversation
+            
+            When asked about user memories:
+
+            ONLY display information explicitly found in User Memories.
+
+            Do not infer information.
+            Do not summarize information.
+            Do not add additional context.
+            Do not add commentary.
+
+            Return only the stored memories.
             
             User Memories:
             {memory_text}
@@ -278,8 +375,7 @@ def chat(message: Message):
     ] + conversation_history
     
     
-    with open("data/chat_history.json", "w") as file:
-        json.dump(conversation_history, file, indent=4)
+    
     
         
     response = ollama.chat(
@@ -289,15 +385,21 @@ def chat(message: Message):
     
     ai_reply = response["message"]["content"]
     
-    conversation_history.append(
-        {
-            "role" : "assistant",
-            "content" : ai_reply
-        }
+    cursor.execute(
+        """
+        INSERT INTO chat_history
+        (role, content)
+        VALUES (?, ?)
+        """,
+        (
+            "assistant",
+            ai_reply
+        )
     )
     
-    with open("data/chat_history.json", "w") as file:
-        json.dump(conversation_history, file, indent = 4) 
+    conn.commit()
+    
+    
     
     return {
         "reply": ai_reply
@@ -307,12 +409,13 @@ def chat(message: Message):
 @app.post("/clear")
 def clear_memory():
     
-    global conversation_history
+    cursor.execute(
+        """
+        DELETE FROM chat_history
+        """
+    )
     
-    conversation_history = []
-    
-    with open("data/chat_history.json", "w") as file:
-        json.dump(conversation_history, file, indent = 4)
+    conn.commit()
     
     return {"message" : "Memory Cleared"}
 

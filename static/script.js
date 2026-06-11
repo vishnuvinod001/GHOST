@@ -21,7 +21,7 @@ async function sendMessage() {
 
   chatBox.innerHTML += `
     <p id="thinking">
-        <b>👻 GHOST:</b> Thinking...
+        <b>GHOST:</b> Thinking...
     </p>
     `;
 
@@ -42,10 +42,13 @@ async function sendMessage() {
   document.getElementById("thinking").remove();
 
   chatBox.innerHTML += `
-        <div class="ai-message">
-        👻 GHOST: ${data.reply}
-        </div>
-    `;
+  <div class="ai-message">
+  GHOST:
+        
+  ${data.reply.trim()}
+
+  </div>
+  `;
 
   chatBox.scrollTop = chatBox.scrollHeight;
 

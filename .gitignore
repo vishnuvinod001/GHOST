@@ -14,3 +14,13 @@ data/chat_history.json
 data/tasks.json
 data/memory.json
 ghost.db
+
+# Generated PDF text
+data/documents/pdf_text.txt
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Uploaded PDFs
+data/documents/*.pdf
