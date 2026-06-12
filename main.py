@@ -2,17 +2,34 @@
 # IMPORTS
 # ==============================================================
 
+# FastAPI
 from fastapi import FastAPI
+from fastapi import Request
+from fastapi import UploadFile, File
+
+# FastAPI Responses & Templates
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi import Request
+
+# Data Validation
 from pydantic import BaseModel
-from fastapi import UploadFile, File
+
+# PDF Processing
 from pypdf import PdfReader
+
+# RAG
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+import faiss
+import numpy as np
+
+# LLM
 import ollama
-import json
+
+# Database & Storage
 import sqlite3
+import json
+
 
 # ==============================================================
 # DATABASE SETUP
@@ -90,6 +107,9 @@ app.mount("/static", StaticFiles(directory = "static"), name = "static")
 
 templates = Jinja2Templates(directory = "templates")
 
+faiss_index = None
+stored_chunks = []
+
 
 # ==============================================================
 # MAIN CHAT ROUTES
@@ -104,11 +124,6 @@ def home(request: Request):
     
 @app.post("/chat")
 def chat(message: Message):
-    
-    with open(
-        "data/documents/pdf_text.txt", "r", encoding = "utf-8"
-    ) as file:
-        pdf_text = file.read()
     
     cursor.execute(
         """
@@ -210,22 +225,28 @@ def chat(message: Message):
     
     """
     
-    memory_response = ollama.chat(
-        model = "qwen3:8b",
-        messages = [
-            {
-                "role" : "user",
-                "content" : memory_prompt
-            }
-        ]
-    )
+    try:
+        memory_response = ollama.chat(
+            model = "qwen3:8b",
+            messages = [
+                {
+                    "role" : "user",
+                    "content" : memory_prompt
+                }
+            ]
+        )
+        memory_reply = memory_response["message"]["content"]
     
-    memory_reply = memory_response["message"]["content"]
-    #print(memory_reply)
+        memory_data = json.loads(memory_reply)
     
-    memory_data = json.loads(memory_reply)
-    #print(type(memory_data))
-    #print(memory_data)
+    except Exception as e:
+        
+        print("Memory extraction failed:", e)
+        
+        memory_data = {
+            "remember": False,
+            "memories": []
+        }
     
     cursor.execute(
     """
@@ -321,63 +342,94 @@ def chat(message: Message):
             }
         )
     
+    retrieved_context = ""
+    
+    if faiss_index is not None:
+        
+        response = ollama.embed(
+            model = "nomic-embed-text",
+            input = message.text
+        )
+        
+        query_embedding = np.array(
+            [response["embeddings"][0]]
+        ).astype("float32")
+        
+        distances, indices = faiss_index.search(
+            query_embedding,
+            k=3
+        )
+        
+        retrieved_chunks = []
+        
+        for i in indices[0]:
+            retrieved_chunks.append(stored_chunks[i])
+            
+        retrieved_context = "\n\n".join(retrieved_chunks)
+    
+    if retrieved_context:
+
+        system_prompt = f"""
+        You are GHOST, a personal AI assistant.
+
+        Avoid markdown formatting.
+        Do not use **bold**, *, #, bullet lists, or emojis unless specifically requested.
+        Respond in clean plain text with simple spacing.
+        Keep responses professional and easy to read.
+
+        When asked about user memories,
+        present the information in separate short sections.
+
+        User Memories:
+        {memory_text}
+
+        You are answering questions about the uploaded document.
+
+        Use ONLY the provided context.
+
+        If the answer is not present in the context, say:
+        "I could not find that information in the uploaded document."
+
+        Do not use outside knowledge.
+
+        Context:
+
+        {retrieved_context}
+        """
+
+    else:
+
+        system_prompt = f"""
+        You are GHOST, a personal AI assistant.
+
+        Avoid markdown formatting.
+        Do not use **bold**, *, #, bullet lists, or emojis unless specifically requested.
+        Respond in clean plain text with simple spacing.
+        Keep responses professional and easy to read.
+
+        You are GHOST, a general-purpose AI assistant.
+
+        Answer the user's question directly.
+
+        Only use User Memories when:
+        - the user asks about themselves
+        - the user asks "what do you know about me?"
+        - the user asks about their goals, projects, interests, skills, or preferences
+
+        For all other questions, ignore User Memories unless they are directly relevant.
+
+        User Memories:
+        {memory_text}
+        """
+        
     messages_for_model = [
         {
-            "role" : "system",
-            "content" : f"""
-            
-            
-            You are GHOST, a personal AI assistant.
-            
-            Avoid markdown formatting.
-            Do not use **bold**, *, #, bullet lists, or emojis unless specifically requested.
-            Respond in clean plain text with simple spacing.
-            Keep responses professional and easy to read.
-            
-            When asked about user memories,
-            present the information in separate short sections.
-
-            Example:
-
-            Name: Vishnu Vinod
-
-            Goal: Become an AI Engineer
-
-            Current Project: GHOST
-
-            Skills: FastAPI
-            
-            Family information is secondary context.
-
-            Do not mention family members unless:
-            - the user asks about them
-            - they are directly relevant to the conversation
-            
-            When asked about user memories:
-
-            ONLY display information explicitly found in User Memories.
-
-            Do not infer information.
-            Do not summarize information.
-            Do not add additional context.
-            Do not add commentary.
-
-            Return only the stored memories.
-            
-            User Memories:
-            {memory_text}
-            
-            Use the following document to answer questions.
-            
-            {pdf_text}
-            """
+            "role": "system",
+            "content": system_prompt
         }
     ] + conversation_history
     
     
-    
-    
-        
     response = ollama.chat(
         model = "qwen3:8b",
         messages = messages_for_model
@@ -398,7 +450,6 @@ def chat(message: Message):
     )
     
     conn.commit()
-    
     
     
     return {
@@ -438,6 +489,34 @@ def upload_pdf(file: UploadFile = File(...)):
     
     for page in reader.pages:
         pdf_text += page.extract_text()
+    
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size = 1000,
+        chunk_overlap = 200
+    )
+    
+    chunks = splitter.split_text(pdf_text)
+    
+    embeddings = []
+    
+    for chunk in chunks:
+        response = ollama.embed(
+            model = "nomic-embed-text",
+            input = chunk
+        )
+        embeddings.append(response["embeddings"][0])
+    
+    global faiss_index
+    global stored_chunks
+    
+    embeddings_np = np.array(embeddings).astype("float32")
+    
+    faiss_index = faiss.IndexFlatL2(768)
+    faiss_index.add(embeddings_np)
+    
+    stored_chunks = chunks
+    
+
     
     with open("data/documents/pdf_text.txt", "w", encoding= "utf-8") as file:
         file.write(pdf_text)
