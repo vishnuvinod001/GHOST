@@ -70,6 +70,15 @@ cursor.execute("""
                  """)
 conn.commit()
 
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS chunks (
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   source  TEXT NOT NULL,
+                   content TEXT NOT NULL
+               ) 
+               """)
+conn.commit()
+
 #cursor.execute(
 #        """
 #        DELETE FROM memories
@@ -497,6 +506,22 @@ def upload_pdf(file: UploadFile = File(...)):
     
     chunks = splitter.split_text(pdf_text)
     
+    for chunk in chunks:
+        
+        cursor.execute(
+            """
+            INSERT INTO chunks
+            (source, content)
+            VALUES (?, ?)
+            """,
+            (
+                file.filename,
+                chunk
+            )
+            
+        )
+    conn.commit()
+    
     embeddings = []
     
     for chunk in chunks:
@@ -511,10 +536,12 @@ def upload_pdf(file: UploadFile = File(...)):
     
     embeddings_np = np.array(embeddings).astype("float32")
     
-    faiss_index = faiss.IndexFlatL2(768)
+    if faiss_index is None:
+        faiss_index = faiss.IndexFlatL2(768)
+    
     faiss_index.add(embeddings_np)
     
-    stored_chunks = chunks
+    stored_chunks.extend(chunks)
     
 
     

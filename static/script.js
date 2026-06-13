@@ -1,3 +1,5 @@
+let uploadedPDFs = [];
+
 const input = document.getElementById("message");
 
 input.addEventListener("keypress", function (event) {
@@ -80,9 +82,21 @@ async function uploadPDF() {
   });
 
   const data = await response.json();
-  document.getElementById("pdf-status").innerText =
-    `📄 ${fileInput.files[0].name}`;
 
+  uploadedPDFs.push(fileInput.files[0].name);
+
+  const pdfList = document.getElementById("pdf-list");
+
+  pdfList.innerHTML = "";
+
+  uploadedPDFs.forEach((pdf) => {
+    pdfList.innerHTML += `
+    <div>
+      📄 ${pdf}
+    </div>
+  `;
+  });
+  console.log("Reached alert");
   alert(data.message);
 }
 
