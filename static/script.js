@@ -1,5 +1,3 @@
-let uploadedPDFs = [];
-
 const input = document.getElementById("message");
 
 input.addEventListener("keypress", function (event) {
@@ -83,21 +81,28 @@ async function uploadPDF() {
 
   const data = await response.json();
 
-  uploadedPDFs.push(fileInput.files[0].name);
+  loadDocuments();
+
+  alert(data.message);
+}
+
+async function loadDocuments() {
+
+  const response = await fetch("/documents");
+  const documents = await response.json();
+
+  console.log(documents);
 
   const pdfList = document.getElementById("pdf-list");
 
   pdfList.innerHTML = "";
-
-  uploadedPDFs.forEach((pdf) => {
+  documents.forEach((pdf) => {
     pdfList.innerHTML += `
-    <div>
-      📄 ${pdf}
-    </div>
-  `;
+      <div>
+        📄 ${pdf}
+      </div>
+    `;
   });
-  console.log("Reached alert");
-  alert(data.message);
 }
 
 async function loadTasks() {
@@ -183,5 +188,6 @@ async function deleteTask(id) {
 
   const data = await response.json();
   console.log(data);
-  loadTasks();
 }
+loadTasks();
+loadDocuments();

@@ -551,7 +551,22 @@ def upload_pdf(file: UploadFile = File(...)):
     return {
         "message" : "PDF Uploaded successfully"
     }
+
+
+@app.get("/documents")
+def get_documents():
     
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute("""
+                   
+        SELECT DISTINCT source
+        FROM chunks
+    """)
+    
+    documents = local_cursor.fetchall()
+    
+    return [doc[0] for doc in documents]
 # ==============================================================
 # TASK ROUTES
 # ==============================================================   
@@ -559,7 +574,9 @@ def upload_pdf(file: UploadFile = File(...)):
 @app.post("/add-task")
 def add_task(task: Task):
     
-    cursor.execute(
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute(
     """
     INSERT INTO tasks
     (task, completed)
