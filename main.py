@@ -39,6 +39,51 @@ conn = sqlite3.connect("ghost.db", check_same_thread = False)
 cursor = conn.cursor()
 
 # ==============================================================
+# AUTOMATIC FAISS BUILDING
+# ==============================================================
+
+def rebuild_faiss():
+    
+    global faiss_index
+    global stored_chunks
+    
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute("""
+        SELECT content
+        FROM chunks                     
+    """)
+    
+    rows = local_cursor.fetchall()
+    
+    if not rows:
+        print("No chunks found.")
+        return
+    
+    stored_chunks = [row[0] for row in rows]
+    
+    embeddings = []
+    
+    for chunk in stored_chunks:
+        
+        response = ollama.embed(
+            model = "nomic-embed-text",
+            input = chunk
+        )
+        
+        embeddings.append(response["embeddings"][0])
+    
+    embeddings_np = np.array(
+        embeddings,
+        dtype = "float32"
+    )
+    
+    faiss_index = faiss.IndexFlatL2(768)
+    faiss_index.add(embeddings_np)
+    
+    print(f"Loaded {len(stored_chunks)} chunks into FAISS.")
+
+# ==============================================================
 # TABLE CREATION
 # ==============================================================
 
@@ -111,13 +156,15 @@ class TaskID(BaseModel):
 # APP CONFIGURATION
 # ==============================================================
 
+faiss_index = None
+stored_chunks = []
+
 app = FastAPI()
+rebuild_faiss()
+
 app.mount("/static", StaticFiles(directory = "static"), name = "static")
 
 templates = Jinja2Templates(directory = "templates")
-
-faiss_index = None
-stored_chunks = []
 
 
 # ==============================================================
