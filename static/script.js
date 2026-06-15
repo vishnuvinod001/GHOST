@@ -82,12 +82,12 @@ async function uploadPDF() {
   const data = await response.json();
 
   loadDocuments();
+  await loadStats();
 
   alert(data.message);
 }
 
 async function loadDocuments() {
-
   const response = await fetch("/documents");
   const documents = await response.json();
 
@@ -155,7 +155,8 @@ async function addTask() {
   const data = await response.json();
   console.log(data);
 
-  loadTasks();
+  await loadTasks();
+  await loadStats();
   taskInput.value = "";
 }
 
@@ -172,7 +173,7 @@ async function completeTask(id) {
 
   const data = await response.json();
   console.log(data);
-  loadTasks();
+  await loadTasks();
 }
 
 async function deleteTask(id) {
@@ -188,6 +189,22 @@ async function deleteTask(id) {
 
   const data = await response.json();
   console.log(data);
+  
+  await loadTasks();
+  await loadStats();
+}
+
+async function loadStats() {
+
+  const response = await fetch("/stats");
+  const stats = await response.json();
+
+  document.getElementById("pdf-count").innerText = stats.pdf_count;
+
+  document.getElementById("chunk-count").innerText = stats.chunk_count;
+
+  document.getElementById("task-count").innerText = stats.task_count;
 }
 loadTasks();
+loadStats();
 loadDocuments();

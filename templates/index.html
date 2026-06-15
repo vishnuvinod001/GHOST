@@ -1,49 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GHOST</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
     <div class="container">
-        <h1>GHOST </h1>
+        <div class="app">
+            <div class="topbar">
+                <h1>GHOST</h1>
+            </div>
 
-        <div id="chat-box"></div>
+            <div class="main-layout">
 
-        <input 
-            type="text" id="message" placeholder="Ask something..."
-        >
+                <div class="sidebar-left">
 
-        <button onclick="sendMessage()">
-            Send
-        </button>
+                    <h2>Knowledge Base</h2>
 
-        <button onclick="clearMemory()">
-            Clear Memory
-        </button>
+                    <input type="file" id="pdfFile">
 
-        <input type="file" id = "pdfFile">
+                    <button onclick="uploadPDF()">
+                        Upload PDF
+                    </button>
 
-        <button onclick="uploadPDF()">
-            Upload PDF
-        </button>
+                    <div id="pdf-list">
+                        No PDFs uploaded
+                    </div>
 
-        <h3>Knowledge Base</h3>
+                </div>
 
-        <div id = "pdf-list">
-            No PDFs uploaded
+                <div class="chat-section">
+
+                    <div id="chat-box">
+                        <div class="welcome-card">
+                            <h2>Welcome to GHOST</h2>
+
+                            <p>
+                                Personal AI Assistant with Memory,
+                                Tasks and Knowledge Base.
+                            </p>
+
+                            <div class="quick-stats">
+
+                                <div class="mini-card">
+                                    Memory Active
+                                </div>
+
+                                <div class="mini-card">
+                                    Knowledge Base Ready
+                                </div>
+
+                                <div class="mini-card">
+                                    RAG Enabled
+                                </div>
+
+                            </div>
+                        </div> 
+                    </div>
+
+                    <div class="chat-input">
+                        <input type="text" id="message" placeholder="Ask GHOST">
+
+                        <button onclick="sendMessage()">
+                            Send
+                        </button>
+
+                        <button onclick="clearMemory()">
+                            Clear
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="sidebar-right">
+
+                    <h2>Tasks</h2>
+
+                    <div id="task-list"></div>
+
+                    <input type="text" id="task-input" placeholder="Enter task...">
+
+                    <button onclick="addTask()">
+                        Add Task
+                    </button>
+
+
+                    <h2>System Status</h2>
+
+                    <div class="stat-card">
+                        <h3>Knowledge Base</h3>
+                        <p>PDFs: <span id="pdf-count">0</span></p>
+                        <p>Chunks: <span id="chunk-count">0</span></p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Memory</h3>
+                        <p>Active: <span id="task_count">0</span></p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Model</h3>
+                        <p>Qwen 3 8B</p>
+                    </div>
+
+                </div>
+            </div>
         </div>
-
-        <h2>Tasks</h2>
-        <div id="task-list"></div>
-
-        <input type="text" id="task-input" placeholder="Enter task...">
-
-        <button onclick="addTask()">Add Task</button>
     </div>
 
     <script src="/static/script.js"></script>
 </body>
+
 </html>

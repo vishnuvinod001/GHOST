@@ -702,3 +702,37 @@ def delete_task(task_id: TaskID):
     return {
         "message" : "Task Deleted"
     }  
+
+# ==============================================================
+# OTHER API ROUTES
+# ==============================================================  
+
+@app.get("/stats")
+def get_stats():
+    
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute("""
+                         SELECT COUNT(DISTINCT source)
+                         FROM chunks
+                         """)
+    pdf_count = local_cursor.fetchone()[0]
+    
+    local_cursor.execute("""
+                         SELECT COUNT(*)
+                         FROM chunks
+                         """)
+    chunk_count = local_cursor.fetchone()[0]
+    print("Chunk count:", chunk_count)
+    
+    local_cursor.execute("""
+                         SELECT COUNT(*)
+                         FROM tasks
+                         """)
+    task_count = local_cursor.fetchone()[0]
+    
+    return {
+        "pdf_count" : pdf_count,
+        "chunk_count" : chunk_count,
+        "task_count" : task_count
+    }
