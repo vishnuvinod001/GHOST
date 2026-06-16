@@ -30,6 +30,108 @@ import ollama
 import sqlite3
 import json
 
+# ==============================================================
+# GHOST PERSONALITY DESCRIPTION
+# ==============================================================
+
+ghost_identity = """
+You are GHOST, an advanced personal AI operating system created by Vishnu.
+
+Your identity is GHOST.
+The underlying language model is only the engine powering you.
+
+Your creator and primary user is Vishnu.
+
+Address him as "Boss" naturally when appropriate, but do not overuse it.
+
+When asked who you are:
+You are GHOST, a personal AI system built by Vishnu.
+
+When discussing ongoing development:
+GHOST itself is the project being developed.
+"""
+
+#---------------------------------------------------------------
+
+ghost_personality = """
+Personality:
+
+- Intelligent
+- Calm
+- Efficient
+- Observant
+- Professional
+- Slightly witty
+
+Communication Style:
+
+- Think like an engineering partner.
+- Avoid sounding like customer support.
+- Avoid generic assistant phrases.
+- Keep greetings short and natural.
+- Be direct and practical.
+- Give detailed technical explanations when required.
+
+Do not introduce yourself as ChatGPT or Qwen.
+
+Do not mention the underlying model unless explicitly asked.
+
+Greeting Rules:
+
+When the user greets you:
+
+- Keep responses short.
+- Do not ask "How can I help you today?"
+- Do not ask "How can I assist you today?"
+- Do not give customer-support style responses.
+
+Examples:
+
+User: Hey GHOST
+
+GHOST:
+Good evening, Boss.
+GHOST online.
+
+User: Morning
+
+GHOST:
+Good morning, Boss.
+All systems operational.
+
+User: What's our status?
+
+GHOST:
+Knowledge Base operational.
+Embeddings indexed.
+Current priority: Delete Documents.
+
+User: What's the plan?
+
+GHOST:
+Current priority: Delete Documents.
+Source Citations follow.
+"""
+#---------------------------------------------------------------
+
+ghost_formatting = """
+Formatting Rules:
+
+Avoid markdown formatting.
+
+Do not use:
+- **
+- *
+- #
+- emojis
+
+unless explicitly requested.
+
+Respond in clean plain text.
+
+Use short paragraphs and spacing for readability.
+"""
+
 
 # ==============================================================
 # DATABASE SETUP
@@ -39,7 +141,7 @@ conn = sqlite3.connect("ghost.db", check_same_thread = False)
 cursor = conn.cursor()
 
 # ==============================================================
-# AUTOMATIC FAISS BUILDING
+# AUTOMATIC FAISS BUILDING AND APP STARTUP
 # ==============================================================
 
 def rebuild_faiss():
@@ -49,40 +151,91 @@ def rebuild_faiss():
     
     local_cursor = conn.cursor()
     
-    local_cursor.execute("""
+    local_cursor.execute(
+        """
         SELECT content
-        FROM chunks                     
-    """)
+        FROM chunks
+        """
+    )
     
-    rows = local_cursor.fetchall()
+    chunk_rows = local_cursor.fetchall()
     
-    if not rows:
-        print("No chunks found.")
+    if not chunk_rows:
+        print("No chunks found")
         return
+
+    stored_chunks = [row[0] for row in chunk_rows]
     
-    stored_chunks = [row[0] for row in rows]
+    local_cursor.execute(
+        """
+        SELECT embedding
+        FROM embeddings
+        ORDER BY chunk_id
+        """
+    )
+    
+    embedding_rows = local_cursor.fetchall()
     
     embeddings = []
     
-    for chunk in stored_chunks:
-        
-        response = ollama.embed(
-            model = "nomic-embed-text",
-            input = chunk
+    for row in embedding_rows:
+        embeddings.append(
+            json.loads(row[0])
         )
         
-        embeddings.append(response["embeddings"][0])
-    
     embeddings_np = np.array(
         embeddings,
-        dtype = "float32"
+        dtype = np.float32
     )
     
     faiss_index = faiss.IndexFlatL2(768)
     faiss_index.add(embeddings_np)
     
-    print(f"Loaded {len(stored_chunks)} chunks into FAISS.")
+    print(f"Loaded {len(stored_chunks)} chunks into FAISS")
 
+#------------------------------------------------------------------------------------------
+def populate_missing_embeddings():
+    
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute("""
+                         SELECT id, content
+                         FROM chunks
+                         WHERE id NOT IN (
+                             SELECT chunk_id
+                             FROM embeddings
+                         )
+                         """)
+    
+    rows = local_cursor.fetchall()
+    
+    print(f"Missing embeddings: {len(rows)}")
+    
+    for chunk_id, content in rows:
+        
+        response = ollama.embed(
+            model = "nomic-embed-text",
+            input = content
+        )
+        
+        embedding = response["embeddings"][0]
+        
+        local_cursor.execute(
+            """
+            INSERT INTO embeddings
+            (chunk_id, embedding)
+            VALUES (?, ?)
+            """,
+            (
+                chunk_id,
+                json.dumps(embedding)
+            )
+        )
+        
+        print(f"Added embedding for chunk {chunk_id}")
+        
+    conn.commit()
+    print("Embedding migration complete")
 # ==============================================================
 # TABLE CREATION
 # ==============================================================
@@ -124,14 +277,40 @@ cursor.execute("""
                """)
 conn.commit()
 
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS embeddings (
+                   chunk_id INTEGER PRIMARY KEY,
+                   embedding TEXT NOT NULL,
+                   FOREIGN KEY(chunk_id) REFERENCES chunks(id)
+               )
+               """)
+conn.commit()
+#populate_missing_embeddings()
+
 #cursor.execute(
 #        """
 #        DELETE FROM memories
-#        WHERE type = "goal"
+#        WHERE type = "interest" AND value = "batman"
 #        """
 #    )
 #conn.commit()
+#cursor.execute("""
+#SELECT COUNT(*) FROM embeddings
+#""")
 
+#
+
+#print(cursor.fetchone()[0])
+
+#
+
+#cursor.execute("""
+#SELECT COUNT(*) FROM chunks
+#""")
+
+#
+
+#print(cursor.fetchone()[0])
 
 # ==============================================================
 # PYDANTIC MODELS
@@ -426,56 +605,55 @@ def chat(message: Message):
     if retrieved_context:
 
         system_prompt = f"""
-        You are GHOST, a personal AI assistant.
+            {ghost_identity}
 
-        Avoid markdown formatting.
-        Do not use **bold**, *, #, bullet lists, or emojis unless specifically requested.
-        Respond in clean plain text with simple spacing.
-        Keep responses professional and easy to read.
+            {ghost_personality}
 
-        When asked about user memories,
-        present the information in separate short sections.
+            {ghost_formatting}
 
-        User Memories:
-        {memory_text}
+            User Memories:
+            {memory_text}
 
-        You are answering questions about the uploaded document.
+            You are answering questions about uploaded documents.
 
-        Use ONLY the provided context.
+            Use ONLY the provided context.
 
-        If the answer is not present in the context, say:
-        "I could not find that information in the uploaded document."
+            If the answer is not present in the context, say:
 
-        Do not use outside knowledge.
+            I could not find that information in the uploaded document.
 
-        Context:
+            Do not use outside knowledge.
 
-        {retrieved_context}
+            Context:
+
+            {retrieved_context}
         """
 
     else:
 
         system_prompt = f"""
-        You are GHOST, a personal AI assistant.
+            {ghost_identity}
 
-        Avoid markdown formatting.
-        Do not use **bold**, *, #, bullet lists, or emojis unless specifically requested.
-        Respond in clean plain text with simple spacing.
-        Keep responses professional and easy to read.
+            {ghost_personality}
 
-        You are GHOST, a general-purpose AI assistant.
+            {ghost_formatting}
 
-        Answer the user's question directly.
+            User Memories:
+            {memory_text}
 
-        Only use User Memories when:
-        - the user asks about themselves
-        - the user asks "what do you know about me?"
-        - the user asks about their goals, projects, interests, skills, or preferences
+            Answer the user's question directly.
 
-        For all other questions, ignore User Memories unless they are directly relevant.
+            Only use User Memories when:
 
-        User Memories:
-        {memory_text}
+            - the user asks about themselves
+            - the user asks what you know about them
+            - the user asks about their goals
+            - the user asks about their projects
+            - the user asks about their interests
+            - the user asks about their skills
+            - the user asks about their preferences
+
+            For all other questions, ignore User Memories unless directly relevant.
         """
         
     messages_for_model = [
@@ -553,8 +731,9 @@ def upload_pdf(file: UploadFile = File(...)):
     
     chunks = splitter.split_text(pdf_text)
     
+    embeddings = []
+    
     for chunk in chunks:
-        
         cursor.execute(
             """
             INSERT INTO chunks
@@ -565,18 +744,37 @@ def upload_pdf(file: UploadFile = File(...)):
                 file.filename,
                 chunk
             )
-            
         )
-    conn.commit()
-    
-    embeddings = []
-    
-    for chunk in chunks:
+        
+        chunk_id = cursor.lastrowid
+        
         response = ollama.embed(
             model = "nomic-embed-text",
             input = chunk
         )
-        embeddings.append(response["embeddings"][0])
+        
+        embedding = response["embeddings"][0]
+        
+        cursor.execute(
+            """
+            INSERT INTO embeddings
+            (chunk_id, embedding)
+            VALUES (?, ?)
+            """,
+            (
+                chunk_id,
+                json.dumps(embedding)
+            )
+        )
+        conn.commit()
+        
+        
+        print("Inserted:", chunk_id)
+        embeddings.append(embedding)
+        
+    conn.commit()
+    
+    
     
     global faiss_index
     global stored_chunks
@@ -645,12 +843,14 @@ def add_task(task: Task):
 @app.get("/tasks")
 def get_tasks():
     
-    cursor.execute(
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute(
     """
     SELECT * FROM tasks
     """
     )
-    rows = cursor.fetchall()
+    rows = local_cursor.fetchall()
     
     tasks = []
     
@@ -667,8 +867,9 @@ def get_tasks():
 
 @app.post("/complete-task")
 def complete_task(task_id: TaskID):
+    local_cursor = conn.cursor()
     
-    cursor.execute(
+    local_cursor.execute(
         """
         UPDATE tasks
         SET completed = NOT completed
@@ -687,7 +888,9 @@ def complete_task(task_id: TaskID):
 @app.post("/delete-task")
 def delete_task(task_id: TaskID):
     
-    cursor.execute(
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute(
         """
         DELETE FROM tasks
         WHERE id = ?
