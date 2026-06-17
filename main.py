@@ -31,6 +31,12 @@ import sqlite3
 import json
 
 # ==============================================================
+# VERSION
+# ==============================================================
+
+GHOST_VERSION = "0.3.0"
+
+# ==============================================================
 # GHOST PERSONALITY DESCRIPTION
 # ==============================================================
 
@@ -349,6 +355,10 @@ templates = Jinja2Templates(directory = "templates")
 # ==============================================================
 # MAIN CHAT ROUTES
 # ==============================================================
+
+@app.get("/version")
+def get_version():
+    return {"version" : GHOST_VERSION}
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
