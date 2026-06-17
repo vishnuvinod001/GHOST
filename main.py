@@ -2,6 +2,8 @@
 # IMPORTS
 # ==============================================================
 
+import os
+
 # FastAPI
 from fastapi import FastAPI
 from fastapi import Request
@@ -30,11 +32,38 @@ import ollama
 import sqlite3
 import json
 
+# Ghost Replies
+import random
+
 # ==============================================================
-# VERSION
+# VERSION & MESSAGES
 # ==============================================================
 
-GHOST_VERSION = "0.3.0"
+GHOST_VERSION = "0.4.0"
+
+EMPTY_MESSAGE_REPLIES = [
+
+    "Standing by, Boss.",
+
+    "Awaiting input, Boss.",
+
+    "I'm listening, Boss.",
+
+    "No message detected, Boss.",
+
+    "Ready when you are, Boss.",
+
+    "Systems operational. Awaiting instructions.",
+
+    "Your move, Boss.",
+
+    "I appear to have received silence.",
+
+    "Communication channel open, Boss.",
+
+    "Standing by for further instructions."
+
+]
 
 # ==============================================================
 # GHOST PERSONALITY DESCRIPTION
@@ -369,6 +398,13 @@ def home(request: Request):
     
 @app.post("/chat")
 def chat(message: Message):
+    
+    if not message.text.strip():
+        return {
+            "reply": random.choice(
+                EMPTY_MESSAGE_REPLIES
+            )
+    }
     
     cursor.execute(
         """
@@ -822,6 +858,51 @@ def get_documents():
     documents = local_cursor.fetchall()
     
     return [doc[0] for doc in documents]
+
+@app.post("/delete-document")
+def delete_document(filename: str):
+    
+    local_cursor = conn.cursor()
+    
+    local_cursor.execute(
+        """
+        SELECT id
+        FROM chunks
+        WHERE source = ?
+        
+        """, (filename,)
+    )
+    
+    chunk_ids = [row[0] for row in local_cursor.fetchall()]
+    
+    for chunk_id in chunk_ids:
+        
+        local_cursor.execute(
+            """
+            DELETE FROM embeddings
+            WHERE chunk_id = ?
+            """, (chunk_id,)
+        )
+        
+        local_cursor.execute(
+            """
+            DELETE FROM chunks
+            WHERE source = ?
+            """, (filename,)
+        )
+        
+    conn.commit()
+    
+    pdf_path = f"data/documents/{filename}"
+    
+    if os.path.exists(pdf_path):
+        os.remove(pdf_path)
+        
+    rebuild_faiss()
+        
+    return {
+        "message" : f"{filename} deleted successfully"
+    }
 # ==============================================================
 # TASK ROUTES
 # ==============================================================   

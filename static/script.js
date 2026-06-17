@@ -70,6 +70,11 @@ async function clearMemory() {
 async function uploadPDF() {
   const fileInput = document.getElementById("pdfFile");
 
+  if (!fileInput.files[0]) {
+    alert("Please select a PDF file first.");
+    return;
+  }
+
   const formData = new FormData();
 
   formData.append("file", fileInput.files[0]);
@@ -88,6 +93,7 @@ async function uploadPDF() {
 }
 
 async function loadDocuments() {
+
   const response = await fetch("/documents");
   const documents = await response.json();
 
@@ -96,13 +102,34 @@ async function loadDocuments() {
   const pdfList = document.getElementById("pdf-list");
 
   pdfList.innerHTML = "";
+
   documents.forEach((pdf) => {
     pdfList.innerHTML += `
-      <div>
+      <div class = "pdf-item">
         📄 ${pdf}
+        <button onclick = "deleteDocument('${pdf}')">
+          🗑
+          </button>
       </div>
     `;
   });
+}
+
+async function deleteDocument(filename) {
+
+  const response = await fetch(
+    `/delete-document?filename=${encodeURIComponent(filename)}`,
+    {
+      method: "POST"
+    }
+  );
+
+  const result = await response.json();
+
+  console.log(result);
+
+  loadDocuments();
+  loadStats();
 }
 
 async function loadTasks() {
@@ -203,6 +230,11 @@ async function loadStats() {
 
   document.getElementById("chunk-count").innerText = stats.chunk_count;
 
+  document.getElementById("task-count").innerText = stats.task_count;
+
+
+  document.getElementById("pdf-count").innerText = stats.pdf_count;
+  document.getElementById("chunk-count").innerText = stats.chunk_count;
   document.getElementById("task-count").innerText = stats.task_count;
 }
 loadTasks();

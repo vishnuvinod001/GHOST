@@ -151,3 +151,10 @@ button:hover{
   padding: 10px 15px;
   border-radius: 8px;
 }
+
+.pdf-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
