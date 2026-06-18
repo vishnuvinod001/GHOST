@@ -93,7 +93,6 @@ async function uploadPDF() {
 }
 
 async function loadDocuments() {
-
   const response = await fetch("/documents");
   const documents = await response.json();
 
@@ -116,12 +115,15 @@ async function loadDocuments() {
 }
 
 async function deleteDocument(filename) {
+  if (!confirm(`Delete ${filename}?`)) {
+    return;
+  }
 
   const response = await fetch(
     `/delete-document?filename=${encodeURIComponent(filename)}`,
     {
-      method: "POST"
-    }
+      method: "POST",
+    },
   );
 
   const result = await response.json();
@@ -216,13 +218,12 @@ async function deleteTask(id) {
 
   const data = await response.json();
   console.log(data);
-  
+
   await loadTasks();
   await loadStats();
 }
 
 async function loadStats() {
-
   const response = await fetch("/stats");
   const stats = await response.json();
 
@@ -231,7 +232,6 @@ async function loadStats() {
   document.getElementById("chunk-count").innerText = stats.chunk_count;
 
   document.getElementById("task-count").innerText = stats.task_count;
-
 
   document.getElementById("pdf-count").innerText = stats.pdf_count;
   document.getElementById("chunk-count").innerText = stats.chunk_count;
