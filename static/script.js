@@ -89,6 +89,8 @@ async function uploadPDF() {
   loadDocuments();
   await loadStats();
 
+  fileInput.value = "";
+
   alert(data.message);
 }
 
