@@ -755,7 +755,20 @@ def chat(message: Message):
     citation_text = ""
     
     if retrieved_context:
-        citation_text = "\n\nSources:\n" + "\n".join(retrieved_sources)
+        
+        if len(retrieved_sources) == 1:
+            
+            citation_text = (
+                "\n\nReference Document:\n" 
+                + "\n".join(retrieved_sources)
+            )
+            
+        else:
+            
+            citation_text = (
+                "\n\nReference Documents:\n" 
+                + "\n".join(retrieved_sources)
+            )
     
     return {
         "reply": ai_reply + citation_text
