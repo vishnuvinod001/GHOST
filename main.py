@@ -752,9 +752,13 @@ def chat(message: Message):
     
     conn.commit()
     
+    citation_text = ""
+    
+    if retrieved_context:
+        citation_text = "\n\nSources:\n" + "\n".join(retrieved_sources)
     
     return {
-        "reply": ai_reply
+        "reply": ai_reply + citation_text
     }
 
 
