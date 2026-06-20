@@ -690,6 +690,10 @@ def chat(message: Message):
             Context:
 
             {retrieved_context}
+            
+            Sources:
+            
+            {", ".join(retrieved_sources)}
         """
 
     else:
