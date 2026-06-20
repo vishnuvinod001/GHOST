@@ -188,18 +188,26 @@ def rebuild_faiss():
     
     local_cursor.execute(
         """
-        SELECT content
+        SELECT content, source
         FROM chunks
         """
     )
     
     chunk_rows = local_cursor.fetchall()
     
+    stored_chunks = []
+    
+    for content, source in chunk_rows:
+        stored_chunks.append(
+            {
+                "content": content,
+                "source": source 
+            }
+        )
+    
     if not chunk_rows:
         print("No chunks found")
         return
-
-    stored_chunks = [row[0] for row in chunk_rows]
     
     local_cursor.execute(
         """
