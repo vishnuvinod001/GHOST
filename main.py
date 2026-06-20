@@ -397,6 +397,7 @@ templates = Jinja2Templates(directory = "templates")
 def get_version():
     return {"version" : GHOST_VERSION}
 
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
@@ -650,9 +651,17 @@ def chat(message: Message):
         )
         
         retrieved_chunks = []
+        retrieved_sources = set()
         
         for i in indices[0]:
-            retrieved_chunks.append(stored_chunks[i])
+            
+            retrieved_chunks.append(
+                stored_chunks[i]["content"]
+            )
+            
+            retrieved_sources.add(
+                stored_chunks[i]["source"]
+            )
             
         retrieved_context = "\n\n".join(retrieved_chunks)
     
