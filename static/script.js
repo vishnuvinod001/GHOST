@@ -27,6 +27,8 @@ async function sendMessage() {
 
   chatBox.scrollTop = chatBox.scrollHeight;
 
+  console.log("Sending: ", userMessage);
+
   const response = await fetch("/chat", {
     method: "POST",
     headers: {
@@ -37,7 +39,11 @@ async function sendMessage() {
     }),
   });
 
+  console.log("Response received");
+
   const data = await response.json();
+
+  console.log(data);
 
   document.getElementById("thinking").remove();
 
