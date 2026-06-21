@@ -759,14 +759,14 @@ def chat(message: Message):
         if len(retrieved_sources) == 1:
             
             citation_text = (
-                "\n\nReference Document:\n" 
+                "\n\n📚 Reference Document:\n" 
                 + "\n".join(retrieved_sources)
             )
             
         else:
             
             citation_text = (
-                "\n\nReference Documents:\n" 
+                "\n\n📚 Reference Documents:\n" 
                 + "\n".join(retrieved_sources)
             )
     
