@@ -634,7 +634,23 @@ def chat(message: Message):
     
     retrieved_context = ""
     
-    if faiss_index is not None:
+    small_talk = [
+        "hi",
+        "hello",
+        "hey",
+        "morning",
+        "good morning",
+        "good evening",
+        "thanks",
+        "thank you",
+        "bye"
+    ]
+    
+    if (
+        faiss_index is not None
+        and
+        message.text.lower().strip() not in small_talk
+        ):
         
         response = ollama.embed(
             model = "nomic-embed-text",
