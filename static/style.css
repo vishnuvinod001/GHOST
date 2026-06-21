@@ -1,119 +1,119 @@
-body{
-    margin:0;
-    background:#0f1117;
-    color:white;
-    font-family:Arial,sans-serif;
+body {
+  margin: 0;
+  background: #0f1117;
+  color: white;
+  font-family: Arial, sans-serif;
 }
 
-.app{
-    height:100vh;
-    display:flex;
-    flex-direction:column;
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.topbar{
-    padding:15px 25px;
-    border-bottom:1px solid #222;
-    background:#161b22;
+.topbar {
+  padding: 15px 25px;
+  border-bottom: 1px solid #222;
+  background: #161b22;
 }
 
-.topbar h1{
-    margin:0;
+.topbar h1 {
+  margin: 0;
 }
 
-.main-layout{
-    flex:1;
-    display:flex;
-    overflow:hidden;
+.main-layout {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
 }
 
-.sidebar-left{
-    width:250px;
-    padding:20px;
-    border-right:1px solid #222;
-    background:#161b22;
+.sidebar-left {
+  width: 250px;
+  padding: 20px;
+  border-right: 1px solid #222;
+  background: #161b22;
 }
 
-.sidebar-right{
-    width:300px;
-    padding:20px;
-    border-left:1px solid #222;
-    background:#161b22;
+.sidebar-right {
+  width: 300px;
+  padding: 20px;
+  border-left: 1px solid #222;
+  background: #161b22;
 }
 
-.chat-section{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    padding:20px;
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
 
-#chat-box{
-    flex:1;
-    overflow-y:auto;
-    background:#1a1f29;
-    border-radius:12px;
-    padding:15px;
+#chat-box {
+  flex: 1;
+  overflow-y: auto;
+  background: #1a1f29;
+  border-radius: 12px;
+  padding: 15px;
 }
 
-.chat-input{
-    display:flex;
-    gap:10px;
-    margin-top:15px;
+.chat-input {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.chat-input input{
-    flex:1;
+.chat-input input {
+  flex: 1;
 }
 
-input{
-    background:#232936;
-    color:white;
-    border:none;
-    border-radius:8px;
-    padding:10px;
+input {
+  background: #232936;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
 }
 
-button{
-    background:#4caf50;
-    color:white;
-    border:none;
-    border-radius:8px;
-    padding:10px 15px;
-    cursor:pointer;
+button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
 }
 
-button:hover{
-    opacity:0.9;
+button:hover {
+  opacity: 0.9;
 }
 
-.user-message{
-    background:#4caf50;
-    padding:10px;
-    border-radius:10px;
-    width:fit-content;
-    margin-left:auto;
-    margin-bottom:10px;
+.user-message {
+  background: #4caf50;
+  padding: 10px;
+  border-radius: 10px;
+  width: fit-content;
+  margin-left: auto;
+  margin-bottom: 10px;
 }
 
-.ai-message{
-    background:#2a3242;
-    padding:10px;
-    border-radius:10px;
-    margin-bottom:10px;
-    max-width:80%;
-    white-space:pre-wrap;
+.ai-message {
+  background: #2a3242;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  white-space: pre-wrap;
 }
 
-.task-item{
-    background:#1f2633;
-    padding:10px;
-    margin-bottom:10px;
-    border-radius:10px;
+.task-item {
+  background: #1f2633;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
 }
 
-#pdf-list{
-    margin-top:15px;
+#pdf-list {
+  margin-top: 15px;
 }
 
 .stat-card {
@@ -124,37 +124,44 @@ button:hover{
   border: 1px solid #2d3748;
 }
 
-.stat-card h3{
+.stat-card h3 {
   margin: 0;
   color: #4caf50;
 }
 
-.stat-card{
+.stat-card {
   margin-top: 8px;
   color: #ccc;
 }
 
-.welcome-card{
+.welcome-card {
   background: #1f2633;
   padding: 25px;
   border-radius: 12px;
 }
 
-.quick-stats{
+.quick-stats {
   display: flex;
   gap: 10px;
   margin-top: 20px;
 }
 
-.mini-card{
+.mini-card {
   background: #2a3242;
   padding: 10px 15px;
   border-radius: 8px;
 }
 
 .pdf-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.version-badge {
+  margin-top: -10px;
+  color: #4caf50;
+  font-size: 16px;
+  font-weight: 600;
 }

@@ -245,6 +245,16 @@ async function loadStats() {
   document.getElementById("chunk-count").innerText = stats.chunk_count;
   document.getElementById("task-count").innerText = stats.task_count;
 }
+
+async function loadVersion() {
+  const response = await fetch("/version");
+  const data = await response.json();
+
+  document.getElementById("version").textContent =
+    data.version;
+}
+
 loadTasks();
 loadStats();
 loadDocuments();
+loadVersion();
