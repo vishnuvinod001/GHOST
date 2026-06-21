@@ -59,6 +59,7 @@ async function sendMessage() {
   chatBox.scrollTop = chatBox.scrollHeight;
 
   input.value = "";
+  input.focus()
 }
 
 async function clearMemory() {
