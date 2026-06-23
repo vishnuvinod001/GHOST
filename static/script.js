@@ -253,6 +253,9 @@ async function loadVersion() {
 
   document.getElementById("version").textContent =
     data.version;
+  
+  document.getElementById("model").textContent =
+    data.model;
 }
 
 loadTasks();

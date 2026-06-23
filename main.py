@@ -40,6 +40,7 @@ import random
 # ==============================================================
 
 GHOST_VERSION = "0.4.0"
+MODEL_NAME = "Qwen3:8B"
 
 EMPTY_MESSAGE_REPLIES = [
 
@@ -395,7 +396,10 @@ templates = Jinja2Templates(directory = "templates")
 
 @app.get("/version")
 def get_version():
-    return {"version" : GHOST_VERSION}
+    return {
+        "version" : GHOST_VERSION,
+        "model" : MODEL_NAME
+        }
 
 
 @app.get("/", response_class=HTMLResponse)
