@@ -177,7 +177,86 @@ conn = sqlite3.connect("ghost.db", check_same_thread = False)
 cursor = conn.cursor()
 
 # ==============================================================
-# AUTOMATIC FAISS BUILDING AND APP STARTUP
+# TABLE CREATION
+# ==============================================================
+
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS tasks (
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   task TEXT NOT NULL,
+                   completed INTEGER DEFAULT 0
+                )
+                """)
+conn.commit()
+
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS memories (
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   type TEXT NOT NULL,
+                   value TEXT NOT NULL,
+                   UNIQUE(type, value)
+                )
+                """)
+conn.commit()
+
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS chat_history (
+                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     role TEXT NOT NULL,
+                     content TEXT NOT NULL
+                 )
+                 """)
+conn.commit()
+
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS chunks (
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   source  TEXT NOT NULL,
+                   content TEXT NOT NULL
+               ) 
+               """)
+conn.commit()
+
+cursor.execute("""
+               CREATE TABLE IF NOT EXISTS embeddings (
+                   chunk_id INTEGER PRIMARY KEY,
+                   embedding TEXT NOT NULL,
+                   FOREIGN KEY(chunk_id) REFERENCES chunks(id)
+               )
+               """)
+conn.commit()  
+
+# ==============================================================
+# PYDANTIC MODELS
+# ==============================================================
+    
+class Message(BaseModel):
+    text: str
+    
+class Task(BaseModel):
+    task: str
+    
+class TaskID(BaseModel):
+    id: int
+
+
+# ==============================================================
+# APP CONFIGURATION
+# ==============================================================
+
+faiss_index = None
+stored_chunks = []
+
+app = FastAPI()
+
+app.mount("/static", StaticFiles(directory = "static"), name = "static")
+
+templates = Jinja2Templates(directory = "templates")
+
+
+
+# ==============================================================
+# RAG / EMBEDDING FUNCTIONS
 # ==============================================================
 
 def rebuild_faiss():
@@ -280,114 +359,10 @@ def populate_missing_embeddings():
         
     conn.commit()
     print("Embedding migration complete")
-# ==============================================================
-# TABLE CREATION
-# ==============================================================
 
-cursor.execute("""
-               CREATE TABLE IF NOT EXISTS tasks (
-                   id INTEGER PRIMARY KEY AUTOINCREMENT,
-                   task TEXT NOT NULL,
-                   completed INTEGER DEFAULT 0
-                )
-                """)
-conn.commit()
-
-cursor.execute("""
-               CREATE TABLE IF NOT EXISTS memories (
-                   id INTEGER PRIMARY KEY AUTOINCREMENT,
-                   type TEXT NOT NULL,
-                   value TEXT NOT NULL,
-                   UNIQUE(type, value)
-                )
-                """)
-conn.commit()
-
-cursor.execute("""
-               CREATE TABLE IF NOT EXISTS chat_history (
-                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     role TEXT NOT NULL,
-                     content TEXT NOT NULL
-                 )
-                 """)
-conn.commit()
-
-cursor.execute("""
-               CREATE TABLE IF NOT EXISTS chunks (
-                   id INTEGER PRIMARY KEY AUTOINCREMENT,
-                   source  TEXT NOT NULL,
-                   content TEXT NOT NULL
-               ) 
-               """)
-conn.commit()
-
-cursor.execute("""
-               CREATE TABLE IF NOT EXISTS embeddings (
-                   chunk_id INTEGER PRIMARY KEY,
-                   embedding TEXT NOT NULL,
-                   FOREIGN KEY(chunk_id) REFERENCES chunks(id)
-               )
-               """)
-conn.commit()
-#populate_missing_embeddings()
-
-#cursor.execute(
-#        """
-#        DELETE FROM memories
-#        WHERE type = "interest" AND value = "batman"
-#        """
-#    )
-#conn.commit()
-#cursor.execute("""
-#SELECT COUNT(*) FROM embeddings
-#""")
-
-#
-
-#print(cursor.fetchone()[0])
-
-#
-
-#cursor.execute("""
-#SELECT COUNT(*) FROM chunks
-#""")
-
-#
-
-#print(cursor.fetchone()[0])
-
-# ==============================================================
-# PYDANTIC MODELS
-# ==============================================================
-class MemoryResponse(BaseModel): # Future validation model for memory extraction
-    remember: bool
-    memories: list
-    
-class Message(BaseModel):
-    text: str
-    
-class Task(BaseModel):
-    task: str
-    
-class TaskID(BaseModel):
-    id: int
-
-
-
-    
-# ==============================================================
-# APP CONFIGURATION
-# ==============================================================
-
-faiss_index = None
-stored_chunks = []
-
-app = FastAPI()
 rebuild_faiss()
 
-app.mount("/static", StaticFiles(directory = "static"), name = "static")
 
-templates = Jinja2Templates(directory = "templates")
 
 
 # ==============================================================
@@ -408,7 +383,11 @@ def home(request: Request):
         request=request,
         name = "index.html"
     )
-    
+
+# ==============================================================
+# CHAT & MEMORY ROUTES
+# ==============================================================
+
 @app.post("/chat")
 def chat(message: Message):
     
@@ -565,7 +544,6 @@ def chat(message: Message):
         
         memory_text += f"- {row[0]}: {row[1]}\n"
 
-    #print(memory_text)
         
     if memory_data["remember"]:
         for memory in memory_data["memories"]:
@@ -594,11 +572,6 @@ def chat(message: Message):
                 
                 conn.commit()
                 existing_memories.append(memory)
-    
-    #print(existing_memories)
-    
-    #print(type(existing_memories))
-    #print(existing_memories)
     
     
     if message.text.lower() == "what do you know about me?":
@@ -1056,7 +1029,7 @@ def delete_task(task_id: TaskID):
     }  
 
 # ==============================================================
-# OTHER API ROUTES
+# DASHBOARD & SYSTEM ROUTES
 # ==============================================================  
 
 @app.get("/stats")
@@ -1075,7 +1048,6 @@ def get_stats():
                          FROM chunks
                          """)
     chunk_count = local_cursor.fetchone()[0]
-    print("Chunk count:", chunk_count)
     
     local_cursor.execute("""
                          SELECT COUNT(*)
