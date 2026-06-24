@@ -20,8 +20,11 @@ async def main():
           
             await session.initialize()
             
-            tools = await session.list_tools()
+            result = await session.call_tool(
+                "list_documents",
+                {}
+            )
             
-            print(tools)
+            print(result)
 
 asyncio.run(main())
