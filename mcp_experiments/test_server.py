@@ -14,8 +14,28 @@ def list_documents() -> list:
 
     return os.listdir(documents_folder)
 
-if __name__ == "__main__":
+
+@mcp.tool()
+def read_file(filename: str) -> str:
     
-    print(list_documents())
+    filepath = os.path.join(
+        "data/documents",
+        filename
+    )
+    
+    if not os.path.exists(filepath):
+        return "File not found"
+
+    with open(
+        filepath,
+        "r",
+        encoding = "utf-8",
+        errors = "ignore"
+    ) as file:
+        
+        return file.read()
+    
+
+if __name__ == "__main__":
     
     mcp.run()

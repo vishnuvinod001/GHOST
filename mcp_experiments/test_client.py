@@ -21,8 +21,10 @@ async def main():
             await session.initialize()
             
             result = await session.call_tool(
-                "list_documents",
-                {}
+                "read_file",
+                {
+                    "filename": "pdf_text.txt"
+                }
             )
             
             print(result)
