@@ -15,4 +15,7 @@ def list_documents() -> list:
     return os.listdir(documents_folder)
 
 if __name__ == "__main__":
+    
+    print(list_documents())
+    
     mcp.run()
