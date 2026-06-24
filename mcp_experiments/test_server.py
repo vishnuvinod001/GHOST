@@ -1,10 +1,18 @@
 from mcp.server.fastmcp import FastMCP
 
-mcp = FastMCP("GHOST Test Server")
+import os
+
+mcp = FastMCP("GHOST Filesystem Server")
 
 @mcp.tool()
-def hello() -> str:
-    return "Hello from GHOST MCP"
+def list_documents() -> list:
+    
+    documents_folder = "data/documents"
+    
+    if not os.path.exists(documents_folder):
+        return[]
+
+    return os.listdir(documents_folder)
 
 if __name__ == "__main__":
     mcp.run()
