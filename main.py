@@ -363,7 +363,184 @@ def populate_missing_embeddings():
 rebuild_faiss()
 
 
+# ==============================================================
+# CHAT HELPER FUNCTIONS
+# ==============================================================
 
+def load_memories():
+    
+    cursor.execute(
+        """
+        SELECT type, value
+        FROM memories
+        """
+    )
+    
+    rows = cursor.fetchall()
+    
+    existing_memories = []
+    
+    memory_text = ""
+    
+    for row in rows:
+        
+        existing_memories.append(
+            {
+                "type" : row[0],
+                "value" : row[1]
+            }
+        )
+        
+        memory_text += f"- {row[0]}: {row[1]}\n"
+    
+    return existing_memories, memory_text
+
+
+def get_chat_history():
+    
+    cursor.execute(
+        """
+        SELECT role, content
+        FROM chat_history
+        ORDER BY id
+        """
+    )
+    
+    rows = cursor.fetchall()
+    
+    conversation_history = []
+    
+    for row in rows:
+        
+        conversation_history.append(
+            {
+                "role" : row[0],
+                "content" : row[1] 
+            }       
+        )
+    
+    return conversation_history
+
+
+def retrieve_rag_context(message: str):
+    
+    retrieved_context = ""
+    
+    retrieved_sources = set()
+    
+    small_talk = [
+        "hi",
+        "hello",
+        "hey",
+        "morning",
+        "good morning",
+        "good evening",
+        "thanks",
+        "thank you",
+        "bye"
+    ]
+    
+    if (
+        faiss_index is not None
+        and 
+        message.lower().strip() not in small_talk
+    ):
+        
+        response = ollama.embed(
+            model = "nomic-embed-text",
+            input = message
+        )
+        
+        query_embedding = np.array(
+            [response["embeddings"][0]]
+        ).astype("float32")
+        
+        distances, indices = faiss_index.search(
+            query_embedding,
+            k=3
+        )
+        
+        retrieved_chunks = []
+        
+        for i in indices[0]:
+            
+            retrieved_chunks.append(
+                stored_chunks[i]["content"]
+            )
+            
+            retrieved_sources.add(
+                stored_chunks[i]["source"]
+            )
+        
+        retrieved_context = "\n\n".join(retrieved_chunks)
+    
+    return retrieved_context, retrieved_sources
+
+
+def build_system_prompt(
+    memory_text: str,
+    retrieved_context:str,
+    retrieved_sources: set
+):
+    
+    if retrieved_context:
+        
+        return f"""
+            {ghost_identity}
+            
+            {ghost_personality}
+            
+            {ghost_formatting}
+            
+            User Memories:
+            {memory_text}
+            
+            You are answering questions about uploaded documents.
+            
+            Use ONLY the provided context.
+            
+            If the answer is not present in the context, say:
+            
+            I could not find the information in the uploaded document.
+            
+            Do not use outside knowledge.
+            
+            Context:
+            
+            {retrieved_context}
+            
+            Sources:
+            
+            {",".join(retrieved_sources)}
+    
+        """
+        
+    return f"""
+        {ghost_identity}
+        
+        {ghost_personality}
+        
+        {ghost_formatting}
+        
+        User Memories:
+        
+        {memory_text}
+        
+        Answer the user's question directly.
+        
+        Only use user Memories when:
+        
+        - the user asks about themselves
+        - the user asks what you know about them
+        - the user asks about their goals
+        - the user asks about their projects
+        - the user asks about their interests
+        - the user asks about their skills
+        - the user asks about their preferences
+        
+        For all other questions, ignore User Memories unless directly relevant.
+    """
+    
 
 # ==============================================================
 # MAIN CHAT ROUTES
@@ -521,28 +698,7 @@ def chat(message: Message):
             "memories": []
         }
     
-    cursor.execute(
-    """
-    SELECT type, value
-    FROM memories
-    """
-    )
-    
-    rows = cursor.fetchall()
-    
-    existing_memories = []
-    
-    memory_text = ""
-    
-    for row in rows:
-        existing_memories.append(
-            {
-                "type": row[0],
-                "value": row[1]
-            }
-        )
-        
-        memory_text += f"- {row[0]}: {row[1]}\n"
+    existing_memories, memory_text = load_memories()
 
         
     if memory_data["remember"]:
@@ -588,133 +744,17 @@ def chat(message: Message):
             "reply": reply
         }
     
+    conversation_history = get_chat_history()
     
-    cursor.execute(
-        """
-        SELECT role, content
-        FROM chat_history
-        ORDER BY id
-        """
+    retrieved_context, retrieved_sources = retrieve_rag_context(
+        message.text
     )
     
-    rows = cursor.fetchall()
-    
-    conversation_history = []
-    
-    for row in rows:
-        conversation_history.append(
-            {
-                "role": row[0],
-                "content": row[1]
-            }
-        )
-    
-    retrieved_context = ""
-    
-    small_talk = [
-        "hi",
-        "hello",
-        "hey",
-        "morning",
-        "good morning",
-        "good evening",
-        "thanks",
-        "thank you",
-        "bye"
-    ]
-    
-    if (
-        faiss_index is not None
-        and
-        message.text.lower().strip() not in small_talk
-        ):
-        
-        response = ollama.embed(
-            model = "nomic-embed-text",
-            input = message.text
-        )
-        
-        query_embedding = np.array(
-            [response["embeddings"][0]]
-        ).astype("float32")
-        
-        distances, indices = faiss_index.search(
-            query_embedding,
-            k=3
-        )
-        
-        retrieved_chunks = []
-        retrieved_sources = set()
-        
-        for i in indices[0]:
-            
-            retrieved_chunks.append(
-                stored_chunks[i]["content"]
-            )
-            
-            retrieved_sources.add(
-                stored_chunks[i]["source"]
-            )
-            
-        retrieved_context = "\n\n".join(retrieved_chunks)
-    
-    if retrieved_context:
-
-        system_prompt = f"""
-            {ghost_identity}
-
-            {ghost_personality}
-
-            {ghost_formatting}
-
-            User Memories:
-            {memory_text}
-
-            You are answering questions about uploaded documents.
-
-            Use ONLY the provided context.
-
-            If the answer is not present in the context, say:
-
-            I could not find that information in the uploaded document.
-
-            Do not use outside knowledge.
-
-            Context:
-
-            {retrieved_context}
-            
-            Sources:
-            
-            {", ".join(retrieved_sources)}
-        """
-
-    else:
-
-        system_prompt = f"""
-            {ghost_identity}
-
-            {ghost_personality}
-
-            {ghost_formatting}
-
-            User Memories:
-            {memory_text}
-
-            Answer the user's question directly.
-
-            Only use User Memories when:
-
-            - the user asks about themselves
-            - the user asks what you know about them
-            - the user asks about their goals
-            - the user asks about their projects
-            - the user asks about their interests
-            - the user asks about their skills
-            - the user asks about their preferences
-
-            For all other questions, ignore User Memories unless directly relevant.
-        """
+    system_prompt = build_system_prompt(
+        memory_text,
+        retrieved_context,
+        retrieved_sources
+    )
         
     messages_for_model = [
         {
