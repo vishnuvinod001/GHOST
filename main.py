@@ -540,7 +540,27 @@ def build_system_prompt(
         
         For all other questions, ignore User Memories unless directly relevant.
     """
+
+
+def build_citations(
+    retrieved_context : str,
+    retrieved_sources : set
+):
     
+    if not retrieved_context:
+        return ""
+    
+    if len(retrieved_sources) ==1:
+        
+        return (
+            "\n\n📚 Reference Document:\n"
+            + "\n".join(retrieved_sources)
+        )
+        
+    return(
+        "\n\n📚 Reference Documents:\n"
+        + "\n".join(retrieved_sources)
+    )
 
 # ==============================================================
 # MAIN CHAT ROUTES
@@ -785,23 +805,10 @@ def chat(message: Message):
     
     conn.commit()
     
-    citation_text = ""
-    
-    if retrieved_context:
-        
-        if len(retrieved_sources) == 1:
-            
-            citation_text = (
-                "\n\n📚 Reference Document:\n" 
-                + "\n".join(retrieved_sources)
-            )
-            
-        else:
-            
-            citation_text = (
-                "\n\n📚 Reference Documents:\n" 
-                + "\n".join(retrieved_sources)
-            )
+    citation_text = build_citations(
+        retrieved_context,
+        retrieved_sources
+    )
     
     return {
         "reply": ai_reply + citation_text
