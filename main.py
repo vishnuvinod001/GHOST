@@ -562,6 +562,155 @@ def build_citations(
         + "\n".join(retrieved_sources)
     )
 
+
+def extract_memory(message: str):
+    
+    memory_prompt = f"""You are a memory extraction system.
+    
+        Analyze the user's message.
+
+        If it contains important long-term information about the user, extract it.
+
+        Important memory categories :
+
+        - name
+        - education
+        - goal
+        - project
+        - interest
+        - preference
+        - skill
+        - relationship
+
+        Examples:
+
+        "My name is Vishnu" -> name
+
+        "I am pursuing MCA" -> education
+
+        "I have a Physics degree" -> education
+
+        "I want to become an AI Engineer" -> goal
+
+        "I am building GHOST" -> project
+
+        "I am interested in Machine Learning" -> interest
+
+        "I prefer Python over Java" -> preference
+
+        "I know FastAPI and Python" -> skill
+
+        "I am building GHOST from scratch" -> project
+
+        "You are GHOST and I am building you" -> relationship
+
+        "I ate dosa today" -> not important
+
+
+        If the user explicitly says:
+        "remember this"
+        "save this"
+        "store this"
+        "don't forget this"
+
+        Treat these as instructions.
+
+        Extract only the information that follows,
+        not the command itself.
+
+        then prioritize storing the relevant information.
+
+        "Remember that I am pursuing MCA"
+        → education
+
+        "Save that I want to become an AI Engineer"
+        → goal
+
+        "Don't forget that I prefer Python"
+        → preference
+
+        "Store the fact that I am building GHOST"
+        → project
+
+        Return ONLY valid JSON.
+
+        Format:
+
+        {{
+            "remember" : true,
+            "memories" : [
+                {{
+                    "type" : "name",
+                    "value" : "Vishnu"
+                }}
+            ]
+        }}
+
+        User message: 
+        {message}
+    """
+    
+    try:
+        memory_response = ollama.chat(
+            model = "qwen3:8b",
+            messages=[
+                {
+                    "role" : "user",
+                    "content" : memory_prompt 
+                }
+            ]
+        )
+        
+        memory_reply = memory_response["message"]["content"]
+        
+        memory_data = json.loads(memory_reply)
+        
+    except Exception as e:
+        
+        print("Memory extraction failed:", e)
+        
+        memory_data = {
+            "remember" : False,
+            "memories" : []
+        }
+    
+    return memory_data
+
+
+def save_memory(
+    memory_data : dict,
+    existing_memories : list
+):
+    if memory_data["remember"]:
+        for memory in memory_data["memories"]:
+                
+            duplicate_found = False
+            for existing_memory in existing_memories:
+                if (
+                    memory["type"].lower() == existing_memory["type"].lower()
+                    and
+                    memory["value"].lower() == existing_memory["value"].lower()
+                ):
+                    duplicate_found = True
+                    break
+            if not duplicate_found:
+                
+                cursor.execute(
+                    """INSERT INTO memories
+                    (type, value)
+                    VALUES (?, ?)
+                    """,
+                    (
+                        memory["type"],
+                        memory["value"]
+                    )
+                )
+                
+                conn.commit()
+                existing_memories.append(memory)
+    
+    return existing_memories
+    
 # ==============================================================
 # MAIN CHAT ROUTES
 # ==============================================================
@@ -609,145 +758,15 @@ def chat(message: Message):
     
     conn.commit()
     
-    memory_prompt = f"""You are a memory extraction system.
-    
-    Analyze the user's message.
-    
-    If it contains important long-term information about the user, extract it.
-    
-    Important memory categories :
-    
-    - name
-    - education
-    - goal
-    - project
-    - interest
-    - preference
-    - skill
-    - relationship
-    
-    Examples:
-    
-    "My name is Vishnu" -> name
-
-    "I am pursuing MCA" -> education
-
-    "I have a Physics degree" -> education
-
-    "I want to become an AI Engineer" -> goal
-
-    "I am building GHOST" -> project
-
-    "I am interested in Machine Learning" -> interest
-
-    "I prefer Python over Java" -> preference
-
-    "I know FastAPI and Python" -> skill
-
-    "I am building GHOST from scratch" -> project
-
-    "You are GHOST and I am building you" -> relationship
-
-    "I ate dosa today" -> not important
-    
-    
-    If the user explicitly says:
-    "remember this"
-    "save this"
-    "store this"
-    "don't forget this"
-    
-    Treat these as instructions.
-    
-    Extract only the information that follows,
-    not the command itself.
-    
-    then prioritize storing the relevant information.
-    
-    "Remember that I am pursuing MCA"
-    → education
-
-    "Save that I want to become an AI Engineer"
-    → goal
-
-    "Don't forget that I prefer Python"
-    → preference
-
-    "Store the fact that I am building GHOST"
-    → project
-    
-    Return ONLY valid JSON.
-    
-    Format:
-    
-    {{
-        "remember" : true,
-        "memories" : [
-            {{
-                "type" : "name",
-                "value" : "Vishnu"
-            }}
-        ]
-    }}
-    
-    User message: 
-    {message.text}
-    
-    """
-    
-    try:
-        memory_response = ollama.chat(
-            model = "qwen3:8b",
-            messages = [
-                {
-                    "role" : "user",
-                    "content" : memory_prompt
-                }
-            ]
-        )
-        memory_reply = memory_response["message"]["content"]
-    
-        memory_data = json.loads(memory_reply)
-    
-    except Exception as e:
-        
-        print("Memory extraction failed:", e)
-        
-        memory_data = {
-            "remember": False,
-            "memories": []
-        }
+    memory_data = extract_memory(message.text)
     
     existing_memories, memory_text = load_memories()
 
         
-    if memory_data["remember"]:
-        for memory in memory_data["memories"]:
-                
-            duplicate_found = False
-            for existing_memory in existing_memories:
-                if (
-                    memory["type"].lower() == existing_memory["type"].lower()
-                    and
-                    memory["value"].lower() == existing_memory["value"].lower()
-                ):
-                    duplicate_found = True
-                    break
-            if not duplicate_found:
-                
-                cursor.execute(
-                    """INSERT INTO memories
-                    (type, value)
-                    VALUES (?, ?)
-                    """,
-                    (
-                        memory["type"],
-                        memory["value"]
-                    )
-                )
-                
-                conn.commit()
-                existing_memories.append(memory)
+    existing_memories = save_memory(
+        memory_data,
+        existing_memories
+    )
     
     
     if message.text.lower() == "what do you know about me?":

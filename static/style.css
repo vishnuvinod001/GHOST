@@ -39,6 +39,8 @@ body {
   padding: 20px;
   border-left: 1px solid #222;
   background: #161b22;
+
+  overflow-y: auto;
 }
 
 .chat-section {
