@@ -35,6 +35,10 @@ import json
 # Ghost Replies
 import random
 
+#MCP Calls
+
+from ghost_mcp.manager import execute_tool
+
 # ==============================================================
 # VERSION & MESSAGES
 # ==============================================================
@@ -745,6 +749,22 @@ def chat(message: Message):
                 EMPTY_MESSAGE_REPLIES
             )
     }
+    
+    # ------------------------------------------------------------------
+    # MCP TOOL ROUTING
+    # ------------------------------------------------------------------
+    
+    if message.text.lower() == "list documents":
+        
+        result = execute_tool(
+            "list_documents",
+            {}
+        )
+        
+        return {
+            "reply" : str(result)
+        }
+    
     
     # --------------------- STORE USER MESSAGE--------------------------
     
