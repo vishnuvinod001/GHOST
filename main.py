@@ -977,10 +977,6 @@ def upload_pdf(file: UploadFile = File(...)):
                 "source" : file.filename
             }
         )
-
-    
-    with open("data/documents/pdf_text.txt", "w", encoding= "utf-8") as file:
-        file.write(pdf_text)
         
     return {
         "message" : "PDF Uploaded successfully"
