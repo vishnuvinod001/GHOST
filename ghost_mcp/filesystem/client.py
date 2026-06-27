@@ -2,7 +2,10 @@ import asyncio
 
 from mcp import ClientSession
 
-async def main():
+async def call_tool(
+    tool_name: str,
+    arguments: dict
+):
     
     from mcp.client.stdio import (
         stdio_client,
@@ -11,7 +14,7 @@ async def main():
     
     server_params = StdioServerParameters(
         command = "python",
-        args = ["mcp_experiments/test_server.py"]
+        args = ["ghost_mcp/filesystem/server.py"]
     ) 
     
     async with stdio_client(server_params) as (read, write):
@@ -21,12 +24,9 @@ async def main():
             await session.initialize()
             
             result = await session.call_tool(
-                "read_file",
-                {
-                    "filename": "pdf_text.txt"
-                }
+                tool_name,
+                arguments
             )
             
-            print(result)
+            return result
 
-asyncio.run(main())

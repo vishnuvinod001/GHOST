@@ -737,12 +737,16 @@ def home(request: Request):
 @app.post("/chat")
 def chat(message: Message):
     
+    # ---------------------- INPUT VALIDATION--------------------------
+    
     if not message.text.strip():
         return {
             "reply": random.choice(
                 EMPTY_MESSAGE_REPLIES
             )
     }
+    
+    # --------------------- STORE USER MESSAGE--------------------------
     
     cursor.execute(
         """
@@ -758,6 +762,8 @@ def chat(message: Message):
     
     conn.commit()
     
+    # ---------------------- MEMORY MANAGEMENT --------------------------
+    
     memory_data = extract_memory(message.text)
     
     existing_memories, memory_text = load_memories()
@@ -768,6 +774,7 @@ def chat(message: Message):
         existing_memories
     )
     
+    # ---------------------- MEMORY QUERY --------------------------
     
     if message.text.lower() == "what do you know about me?":
 
@@ -783,6 +790,8 @@ def chat(message: Message):
             "reply": reply
         }
     
+    # ---------------------- CONTEXT RETRIEVAL --------------------------
+    
     conversation_history = get_chat_history()
     
     retrieved_context, retrieved_sources = retrieve_rag_context(
@@ -794,7 +803,9 @@ def chat(message: Message):
         retrieved_context,
         retrieved_sources
     )
-        
+    
+    # ---------------------- LLM INFERENCE --------------------------
+    
     messages_for_model = [
         {
             "role": "system",
@@ -810,6 +821,8 @@ def chat(message: Message):
     
     ai_reply = response["message"]["content"]
     
+    # ---------------------- STORE ASSISTANT RESPONSE --------------------------
+    
     cursor.execute(
         """
         INSERT INTO chat_history
@@ -823,6 +836,8 @@ def chat(message: Message):
     )
     
     conn.commit()
+    
+    # ---------------------- BUILD FINAL RESPONSE -------------------------------
     
     citation_text = build_citations(
         retrieved_context,
