@@ -38,6 +38,7 @@ import random
 #MCP Calls
 
 from ghost_mcp.manager import execute_tool
+from ghost_mcp.formatter import format_tool_result
 
 # ==============================================================
 # VERSION & MESSAGES
@@ -761,8 +762,13 @@ def chat(message: Message):
             {}
         )
         
+        reply = format_tool_result(
+            "list_documents",
+            result
+        )
+        
         return {
-            "reply" : str(result)
+            "reply" : reply
         }
     
     
@@ -890,6 +896,8 @@ def clear_memory():
 @app.post("/upload-pdf")
 def upload_pdf(file: UploadFile = File(...)):
     
+    local_cursor = conn.cursor()
+    
     pdf_path = f"data/documents/{file.filename}"
     
     with open(pdf_path, "wb") as buffer:
@@ -912,7 +920,7 @@ def upload_pdf(file: UploadFile = File(...)):
     embeddings = []
     
     for chunk in chunks:
-        cursor.execute(
+        local_cursor.execute(
             """
             INSERT INTO chunks
             (source, content)
@@ -924,7 +932,7 @@ def upload_pdf(file: UploadFile = File(...)):
             )
         )
         
-        chunk_id = cursor.lastrowid
+        chunk_id = local_cursor.lastrowid
         
         response = ollama.embed(
             model = "nomic-embed-text",
@@ -933,7 +941,7 @@ def upload_pdf(file: UploadFile = File(...)):
         
         embedding = response["embeddings"][0]
         
-        cursor.execute(
+        local_cursor.execute(
             """
             INSERT INTO embeddings
             (chunk_id, embedding)
@@ -946,8 +954,6 @@ def upload_pdf(file: UploadFile = File(...)):
         )
         conn.commit()
         
-        
-        print("Inserted:", chunk_id)
         embeddings.append(embedding)
         
     conn.commit()
@@ -964,8 +970,13 @@ def upload_pdf(file: UploadFile = File(...)):
     
     faiss_index.add(embeddings_np)
     
-    stored_chunks.extend(chunks)
-    
+    for chunk in chunks:
+        stored_chunks.append(
+            {
+                "content" : chunk,
+                "source" : file.filename
+            }
+        )
 
     
     with open("data/documents/pdf_text.txt", "w", encoding= "utf-8") as file:

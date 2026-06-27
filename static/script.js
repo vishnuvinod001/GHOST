@@ -93,7 +93,7 @@ async function uploadPDF() {
 
   const data = await response.json();
 
-  loadDocuments();
+  await loadDocuments();
   await loadStats();
 
   fileInput.value = "";
@@ -241,10 +241,7 @@ async function loadStats() {
   document.getElementById("chunk-count").innerText = stats.chunk_count;
 
   document.getElementById("task-count").innerText = stats.task_count;
-
-  document.getElementById("pdf-count").innerText = stats.pdf_count;
-  document.getElementById("chunk-count").innerText = stats.chunk_count;
-  document.getElementById("task-count").innerText = stats.task_count;
+  
 }
 
 async function loadVersion() {
