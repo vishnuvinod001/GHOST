@@ -39,6 +39,7 @@ import random
 
 from ghost_mcp.manager import execute_tool
 from ghost_mcp.formatter import format_tool_result
+from ghost_mcp.router import route_tool
 
 # ==============================================================
 # VERSION & MESSAGES
@@ -755,20 +756,22 @@ def chat(message: Message):
     # MCP TOOL ROUTING
     # ------------------------------------------------------------------
     
-    if message.text.lower() == "list documents":
+    tool_request = route_tool(message.text)
+    
+    if tool_request["use_tool"]:
         
         result = execute_tool(
-            "list_documents",
-            {}
+            tool_request["tool"],
+            tool_request["arguments"]
         )
         
         reply = format_tool_result(
-            "list_documents",
+            tool_request["tool"],
             result
         )
         
-        return {
-            "reply" : reply
+        return{
+            "reply": reply
         }
     
     
