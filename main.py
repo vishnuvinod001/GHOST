@@ -40,6 +40,7 @@ import random
 from ghost_mcp.manager import execute_tool
 from ghost_mcp.formatter import format_tool_result
 from ghost_mcp.router import route_tool
+from ghost_mcp.tool_prompt import build_tool_prompt
 
 # ==============================================================
 # VERSION & MESSAGES
@@ -765,13 +766,29 @@ def chat(message: Message):
             tool_request["arguments"]
         )
         
-        reply = format_tool_result(
+        tool_result = format_tool_result(
             tool_request["tool"],
             result
         )
         
-        return{
-            "reply": reply
+        tool_prompt = build_tool_prompt(
+            message.text,
+            tool_request["tool"],
+            tool_result
+        )
+        
+        response = ollama.chat(
+            model = "qwen3:8b",
+            messages = [
+                {
+                    "role": "system",
+                    "content": tool_prompt
+                }
+            ]
+        )
+        
+        return {
+            "reply": response["message"]["content"]
         }
     
     

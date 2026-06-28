@@ -48,10 +48,10 @@ async function sendMessage() {
   document.getElementById("thinking").remove();
 
   chatBox.innerHTML += `
-  <div class="ai-message">
-  GHOST:
-        
-  ${data.reply.trim()}
+  <div class = "ai-message">
+  <b>GHOST:</b>
+
+  ${marked.parse(data.reply.trim())}
 
   </div>
   `;
@@ -59,7 +59,7 @@ async function sendMessage() {
   chatBox.scrollTop = chatBox.scrollHeight;
 
   input.value = "";
-  input.focus()
+  input.focus();
 }
 
 async function clearMemory() {
@@ -241,18 +241,15 @@ async function loadStats() {
   document.getElementById("chunk-count").innerText = stats.chunk_count;
 
   document.getElementById("task-count").innerText = stats.task_count;
-  
 }
 
 async function loadVersion() {
   const response = await fetch("/version");
   const data = await response.json();
 
-  document.getElementById("version").textContent =
-    data.version;
-  
-  document.getElementById("model").textContent =
-    data.model;
+  document.getElementById("version").textContent = data.version;
+
+  document.getElementById("model").textContent = data.model;
 }
 
 loadTasks();
