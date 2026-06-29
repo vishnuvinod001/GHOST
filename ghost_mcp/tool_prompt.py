@@ -1,30 +1,27 @@
 def build_tool_prompt(
-    user_message: str,
     tool_name: str,
     tool_result: str
 ):
     return f"""
-    You are GHOST.
+    Tool Information
     
-    The user asked:
+    The following tool was executed to help answer the user's request.
     
-    {user_message}
-    
-    Tool used:
+    Tool:
     
     {tool_name}
-    
-    A tool was executed.
     
     Tool result:
     
     {tool_result}
     
-    Answer the user's original question naturally.
+    Answer the user's original request using ONLY this information.
     
-    Do not mention tools, MCP, or internal implementation.
+    Do not mention:
+    - tools
+    - MCP
+    - internal systems
+    - routing
     
-    Use only the tool result.
-    
-    If the tool result is empty, tell the user accordingly. 
+    If the tool result is empty, politely tell the user nothing was found. 
 """

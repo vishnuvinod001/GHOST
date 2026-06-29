@@ -759,6 +759,8 @@ def chat(message: Message):
     
     tool_request = route_tool(message.text)
     
+    tool_result = ""
+    
     if tool_request["use_tool"]:
         
         result = execute_tool(
@@ -771,26 +773,6 @@ def chat(message: Message):
             result
         )
         
-        tool_prompt = build_tool_prompt(
-            message.text,
-            tool_request["tool"],
-            tool_result
-        )
-        
-        response = ollama.chat(
-            model = "qwen3:8b",
-            messages = [
-                {
-                    "role": "system",
-                    "content": tool_prompt
-                }
-            ]
-        )
-        
-        return {
-            "reply": response["message"]["content"]
-        }
-    
     
     # --------------------- STORE USER MESSAGE--------------------------
     
@@ -851,6 +833,13 @@ def chat(message: Message):
     )
     
     # ---------------------- LLM INFERENCE --------------------------
+    
+    if tool_request["use_tool"]:
+        
+        system_prompt += build_tool_prompt(
+            tool_request["tool"],
+            tool_result
+        )
     
     messages_for_model = [
         {
