@@ -29,4 +29,3 @@ async def call_tool(
             )
             
             return result
-

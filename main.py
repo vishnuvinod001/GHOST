@@ -759,6 +759,8 @@ def chat(message: Message):
     
     tool_request = route_tool(message.text)
     
+    print(tool_request)
+    
     tool_result = ""
     
     if tool_request["use_tool"]:
@@ -767,6 +769,8 @@ def chat(message: Message):
             tool_request["tool"],
             tool_request["arguments"]
         )
+        
+        print(result)
         
         tool_result = format_tool_result(
             tool_request["tool"],

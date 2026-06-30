@@ -11,6 +11,16 @@ def route_tool(message: str):
         1. list_documents
         - List all uploaded documents.
         
+        2. read_file
+        - Read the contents of a file from the GHOST Workspace or Projects folder.
+        
+        Arguments:
+        {{
+            "path" : "<path>"
+        }}
+        
+        
+        
         Decide whether the user's message requires a tool.
         
         Return ONLY valid JSON.
@@ -45,7 +55,32 @@ def route_tool(message: str):
             "arguments": {{}}
         }}
         
-        USer message:
+        
+        User:
+        Read workspace/notes.txt
+        
+        Output:
+        {{
+            "use_tool": true,
+            "tool": "read_file",
+            "arguments": {{
+                "path": "workspace/notes.txt"
+            }}
+        }}
+        
+        User:
+        Read projects/GHOST/main.py
+        
+        Output:
+        {{
+            "use_tool": true,
+            "tool": "read_file",
+            "arguments": {{
+                "path": "projects/GHOST/main.py"
+            }}
+        }}
+        
+        User message:
         {message}
     """
     

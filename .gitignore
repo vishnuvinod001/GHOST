@@ -24,3 +24,4 @@ __pycache__/
 
 # Uploaded PDFs
 data/documents/*.pdf
+workspace/
