@@ -25,4 +25,5 @@ Retrieved Content:
 {tool_result}
 
 If the retrieved content is empty, politely say that no information was found.
+
 """

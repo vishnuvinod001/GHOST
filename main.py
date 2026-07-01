@@ -824,12 +824,22 @@ def chat(message: Message):
     
     # ---------------------- CONTEXT RETRIEVAL --------------------------
     
-    conversation_history = get_chat_history()
-    
-    retrieved_context, retrieved_sources = retrieve_rag_context(
-        message.text
-    )
-    
+    if tool_request["use_tool"]:
+        
+        conversation_history = []
+        
+        retrieved_context = ""
+        
+        retrieved_sources = []
+        
+    else:
+        
+        conversation_history = get_chat_history()
+        
+        retrieved_context, retrieved_sources = retrieve_rag_context(
+            message.text
+        )
+        
     system_prompt = build_system_prompt(
         memory_text,
         retrieved_context,
@@ -844,14 +854,26 @@ def chat(message: Message):
             tool_request["tool"],
             tool_result
         )
+        
+        messages_for_model = [
+            {
+                "role": "system",
+                "content": system_prompt 
+            },
+            {
+                "role": "user",
+                "content": message.text
+            }
+        ]
     
-    messages_for_model = [
-        {
-            "role": "system",
-            "content": system_prompt
-        }
-    ] + conversation_history
-    
+    else:
+        messages_for_model = [
+            {
+                "role": "system",
+                "content": system_prompt
+            }
+        ] + conversation_history
+        
     
     response = ollama.chat(
         model = "qwen3:8b",

@@ -18,15 +18,10 @@ WORKSPACE_ROOT = os.path.join(
 
 PROJECTS_ROOT = r"C:\Users\Asus\Desktop\All\Projects"
 
-print("Workspace created at:", os.path.abspath(WORKSPACE_ROOT))
-print("Current working directory:", os.getcwd())
-
 os.makedirs(
     WORKSPACE_ROOT,
     exist_ok = True
 )
-
-print("Workspace:", os.path.abspath(WORKSPACE_ROOT))
 
 mcp = FastMCP("GHOST Filesystem Server")
 
