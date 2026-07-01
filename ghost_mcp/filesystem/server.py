@@ -25,6 +25,8 @@ os.makedirs(
 
 mcp = FastMCP("GHOST Filesystem Server")
 
+#------------------------------LIST DOCUMENTS---------------------------------
+
 @mcp.tool()
 def list_documents() -> list:
     
@@ -35,11 +37,49 @@ def list_documents() -> list:
 
     return os.listdir(documents_folder)
 
+#------------------------------READ FILE---------------------------------
 
 @mcp.tool()
 def read_file(path: str) -> str:
     
+    if not path.startswith("workspace/"):
+        return "Access denied."
+
+    relative_path = path.replace(
+        "workspace/",
+        "",
+        1
+    )
+    
+    filepath = os.path.join(
+        WORKSPACE_ROOT,
+        relative_path
+    )
+    
+    
+    if not os.path.exists(filepath):
+        return f"File not found: {filepath}"
+    
+    
+    with open(                  # Other text file handler 
+        filepath,
+        "r",
+        encoding = "utf-8",
+        errors = "ignore"
+    ) as file:
+        
+        return file.read()
+   
+#------------------------------CREATE FILE---------------------------------   
+    
+@mcp.tool()
+def create_file(
+    path: str,
+    content: str = ""
+) -> str:
+    
     if path.startswith("workspace/"):
+        
         relative_path = path.replace(
             "workspace/",
             "",
@@ -64,23 +104,25 @@ def read_file(path: str) -> str:
             relative_path
         )
     
+    
     else:
         return "Access denied."
     
     
-    if not os.path.exists(filepath):
-        return f"File not found: {filepath}"
+    os.makedirs(
+        os.path.dirname(filepath),
+        exist_ok = True
+    )
     
-    
-    with open(                  # Other text file handler 
+    with open(
         filepath,
-        "r",
-        encoding = "utf-8",
-        errors = "ignore"
+        "w",
+        encoding = "utf-8"
     ) as file:
         
-        return file.read()
+        file.write(content)
     
+    return f"File created successfully: {path}"
 
 if __name__ == "__main__":
     
