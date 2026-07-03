@@ -124,6 +124,75 @@ def create_file(
     
     return f"File created successfully: {path}"
 
+#------------------------------EDIT FILE---------------------------------   
+
+@mcp.tool()
+def edit_file(
+    path: str,
+    content:str,
+    mode: str = "replace"
+) -> str:
+    
+    if not path.startswith("workspace/"):
+        return "Access denied."
+    
+    relative_path = path.replace(
+        "workspace/",
+        "",
+        1
+    )
+    filepath = os.path.join(
+        WORKSPACE_ROOT,
+        relative_path
+    )
+    
+    if not os.path.exists(filepath):
+        return "File not found."
+    
+    if mode == "replace":
+        
+        with open(
+            filepath,
+            "w",
+            encoding = "utf-8"
+        ) as file:
+            
+            file.write(content)
+    
+    elif mode == "append":
+        
+        with open(
+            filepath,
+            "a",
+            encoding = "utf-8"
+        ) as file:
+            
+            file.write(content)
+    
+    elif mode == "prepend":
+        
+        with open(
+            filepath,
+            "r",
+            encoding = "utf-8"
+        ) as file:
+            
+            existing_content = file.read()
+            
+        with open(
+            filepath,
+            "w",
+            encoding = "utf-8"
+        ) as file:
+            
+            file.write(content + existing_content)
+    
+    else:
+        return "Invalid mode."
+    
+    return f"File edited successfully: {path}"
+
+
 if __name__ == "__main__":
     
     mcp.run()

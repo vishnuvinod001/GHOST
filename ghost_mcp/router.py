@@ -49,7 +49,30 @@ def route_tool(message: str):
     {{
         "content": "<content>"
     }}
+    
+    --------------------------------------------------
+    
+    4. edit_file
+     - Modify an existing file in the GHOST Workspace.
      
+     - This tool can ONLY edit files inside:
+        workspace/
+        
+    Arguments:
+    
+    Required:
+    {{
+        "path": "<path>",
+        "content": "<content>"
+    }}
+    
+    Optional:
+    {{
+        "mode": "replace | append | prepend"
+    }}
+    
+    If the mode is not specified by the user, use "replace by default.
+    
     ==================================================================
     GENERAL INSTRUCTIONS
     ==================================================================
@@ -164,6 +187,67 @@ def route_tool(message: str):
             "content": "- Buy milk\n- Finish GHOST\n- Push to GitHub"
         }}
     }}
+    
+    
+    ==================================================================
+    EDIT FILE EXAMPLES
+    ==================================================================  
+    
+    User: 
+    Replace the contents of workspace/notes.txt with Hello Boss
+    
+    Output:
+    
+    {{
+        "use_tool": true,
+        "tool": "edit_file",
+        "arguments":
+        {{
+            "path": "workspace/notes.txt",
+            "content": "Hello Boss",
+            "mode": "replace"
+        }}
+    }}
+    
+    --------------------------------------------------
+    User:
+    Append "Goodbye" to workspace/notes.txt
+    
+    Output:
+    {{
+        "use_tool": true,
+        "tool": "edit_file",
+        "arguments":
+        {{
+            "path": "workspace/notes.txt",
+            "content": "Goodbye",
+            "mode": "append"
+        }}
+    }}
+    
+    --------------------------------------------------
+    User:
+    Prepend "Title\n" to workspace/notes.txt
+    
+    Output:
+    {{
+        "use_tool": true,
+        "tool": "edit_tool",
+        "arguments":
+        {{
+            "path": "workspace/notes.txt",
+            "content": "Title\n",
+            "mode": "prepend"
+        }}
+    }}
+    
+    
+    RULES:
+    - Always include the mode argument.
+    - If the user says "replace", use "replace".
+    - If the user says "append", use "append".
+    - If the user says "prepend", use "prepend".
+    - If the user does not specify a mode, use "replace".
     
     ==================================================================
     NON-TOOL EXAMPLES
