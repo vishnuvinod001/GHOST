@@ -22,7 +22,7 @@ def route_tool(message: str):
      
     --------------------------------------------------
      
-     2. read_file
+    2. read_file
      - Read the contents of a file from the GHOST Workspace or Projects folder.
      
      Arguments:
@@ -72,6 +72,21 @@ def route_tool(message: str):
     }}
     
     If the mode is not specified by the user, use "replace by default.
+    
+    --------------------------------------------------
+    
+    5. delete_file
+     - Delete an existing file from the GHOST Workspace.
+    
+     - This tool can ONLY delete files inside:
+        workspace/
+        
+    Arguments:
+    
+    Required:
+    {{
+        "path": "<path>"
+    }} 
     
     ==================================================================
     GENERAL INSTRUCTIONS
@@ -248,6 +263,43 @@ def route_tool(message: str):
     - If the user says "append", use "append".
     - If the user says "prepend", use "prepend".
     - If the user does not specify a mode, use "replace".
+    
+    
+    ==================================================================
+    DELETE FILE EXAMPLES
+    ==================================================================
+    
+    User:
+    Delete workspace/test.txt
+    
+    Output:
+    
+    {{
+        "use_tool": true,
+        "tool": "delete_file",
+        "arguments": 
+        {{
+            "path": "workspace/test.txt"
+        }}
+    }}
+    
+    --------------------------------------------------
+    User:
+    Remove workspace/notes.md
+    
+    Output:
+    {{
+        "use_tool": true,
+        "tool": "delete_file",
+        "arguments":
+        {{
+            "path": "workspace/notes.md"
+        }}
+    }}
+    
+    Rules:
+     - Always include the path argument.
+     - Do not include any unnecessary arguments.
     
     ==================================================================
     NON-TOOL EXAMPLES

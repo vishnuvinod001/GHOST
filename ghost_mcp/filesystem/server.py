@@ -193,6 +193,34 @@ def edit_file(
     return f"File edited successfully: {path}"
 
 
+#------------------------------DELETE FILE---------------------------------   
+
+@mcp.tool()
+def delete_file(
+    path: str,
+)-> str:
+    
+    if not path.startswith("workspace/"):
+        return "Access denied."
+    
+    relative_path = path.replace(
+        "workspace/",
+        "",
+        1 # 1 - replace just the 1st occurrence
+    )
+    
+    filepath = os.path.join(
+        WORKSPACE_ROOT,
+        relative_path
+    )
+    
+    if not os.path.exists(filepath):
+        return "File not found."
+    
+    os.remove(filepath)
+    
+    return f"File deleted successfully: {path}"
+
 if __name__ == "__main__":
     
     mcp.run()

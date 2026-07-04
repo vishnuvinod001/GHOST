@@ -25,3 +25,7 @@ __pycache__/
 # Uploaded PDFs
 data/documents/*.pdf
 workspace/
+
+# Temporary MCP testing
+test_manager.py
+test_router.py
