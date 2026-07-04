@@ -221,6 +221,34 @@ def delete_file(
     
     return f"File deleted successfully: {path}"
 
+#------------------------------SEARCH FILE---------------------------------
+
+@mcp.tool()
+def search_files(
+    query: str
+) -> list:
+    
+    matches = []
+    
+    for root, _, files in os.walk( # goes through the current directory and also its nested dirs too 
+        WORKSPACE_ROOT
+    ):
+        
+        for file in files:
+            
+            if query.lower() in file.lower():
+                
+                relative_path = os.path.relpath(
+                    os.path.join(root, file),
+                    WORKSPACE_ROOT
+                )
+                
+                matches.append(
+                    f"workspace/{relative_path}"
+                )
+        
+        return matches
+
 if __name__ == "__main__":
     
     mcp.run()

@@ -88,6 +88,21 @@ def route_tool(message: str):
         "path": "<path>"
     }} 
     
+    --------------------------------------------------
+    
+    6. search_files
+     - Search for files in the GHOST Workspace by filename.
+     
+     - This tool can ONLY search files inside:
+        workspace/
+        
+    Arguments:
+    
+    Required:
+    {{
+        "query": "<search query>"
+    }}
+    
     ==================================================================
     GENERAL INSTRUCTIONS
     ==================================================================
@@ -124,7 +139,7 @@ def route_tool(message: str):
 
     ==================================================================
     READ FILE EXAMPLES
-    ==================================================================  
+    ==================================================================
     
     User:
     Read workspace/notes.txt
@@ -299,6 +314,58 @@ def route_tool(message: str):
     
     Rules:
      - Always include the path argument.
+     - Do not include any unnecessary arguments.
+     
+    =================================================================
+    SEARCH FILES EXAMPLES
+    ==================================================================
+    
+    User:
+    Search for notes
+    
+    Output:
+    
+    {{
+        "use_tool": true,
+        "tool": "search_files",
+        "arguments":
+        {{
+            "query": "notes"
+        }}
+    }}
+    
+    --------------------------------------------------
+    User:
+    Find report.pdf
+    
+    Output:
+    
+    {{
+        "use_tool": true,
+        "tool": "search_files",
+        "arguments":
+        {{
+            "query": "report.pdf"
+        }}
+    }}
+    
+    --------------------------------------------------
+    User:
+    Find files containing txt
+    
+    Output:
+    
+    {{
+        "use_tool"" true,
+        "tool": "search_files",
+        "arguments":
+        {{
+            "query": "txt"
+        }}
+    }}
+    
+    Rules:
+     - Always include the query argument.
      - Do not include any unnecessary arguments.
     
     ==================================================================
