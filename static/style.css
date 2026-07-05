@@ -198,6 +198,52 @@ button:hover {
   margin: 12px 0;
 }
 
-.ai-message code{
+.ai-message code {
   font-family: Consolas, monospace;
+}
+
+.subtitle {
+  color: #b8b8b8;
+  margin-bottom: 25px;
+}
+
+.welcome-card hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 25px 0;
+}
+
+.module-card {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+
+  background: #232936;
+
+  border: 1px solid #333;
+  border-radius: 12px;
+
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.module-icon {
+  font-size: 48px;
+  width: 80px;
+  text-align: center;
+}
+
+.module-card h3 {
+  color: #4caf50;
+  margin-bottom: 12px;
+}
+
+.module-card p {
+  margin: 6px 0;
+}
+
+.module-icon svg {
+  width: 64px;
+  height: 64px;
+  color: #4caf50;
 }
