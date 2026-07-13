@@ -247,7 +247,7 @@ def search_files(
                     f"workspace/{relative_path}"
                 )
         
-        return matches
+    return matches
 
 if __name__ == "__main__":
     
