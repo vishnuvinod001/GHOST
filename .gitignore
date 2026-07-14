@@ -29,3 +29,4 @@ workspace/
 # Temporary MCP testing
 test_manager.py
 test_router.py
+test_browser.py
