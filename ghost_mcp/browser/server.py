@@ -24,11 +24,25 @@ def fetch_url(url: str)->str:
     
     soup = BeautifulSoup(response.text, "html.parser")
     
+    for tag in soup(["script", "style", "noscript"]):
+        tag.decompose()
+        
+    title = "Untitled"
+    
+    if soup.title and soup.title.string:
+        title = soup.title.string.strip()
+    
     text = soup.get_text(
         separator="\n",
         strip = True
     )
-    return text
+    return (
+        f"Title:\n"
+        f"{title}\n\n"
+        f"Content:\n"
+        f"{text}"
+    )
+
 
 if __name__ == "__main__":
     mcp.run()
