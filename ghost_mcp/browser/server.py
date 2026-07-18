@@ -1,5 +1,6 @@
 from mcp.server.fastmcp import FastMCP
 import requests
+from bs4 import BeautifulSoup
 
 mcp = FastMCP("GHOST Browser Server")
 
@@ -9,7 +10,7 @@ def ping() -> str:
 
 @mcp.tool()
 def fetch_url(url: str)->str:
-    """Fetch the HTML of a webpage."""
+    """Fetch and extract readable text from a webpage."""
     
     response = requests.get(
         url,
@@ -20,7 +21,14 @@ def fetch_url(url: str)->str:
     )
     
     response.raise_for_status()
-    return response.text
+    
+    soup = BeautifulSoup(response.text, "html.parser")
+    
+    text = soup.get_text(
+        separator="\n",
+        strip = True
+    )
+    return text
 
 if __name__ == "__main__":
     mcp.run()
