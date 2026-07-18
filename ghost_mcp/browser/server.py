@@ -36,6 +36,14 @@ def fetch_url(url: str)->str:
         separator="\n",
         strip = True
     )
+    
+    lines = text.splitlines()
+    
+    while lines and lines[0].strip() == title:
+        lines.pop(0)
+        
+    text = "\n".join(lines).strip()
+    
     return (
         f"Title:\n"
         f"{title}\n\n"
