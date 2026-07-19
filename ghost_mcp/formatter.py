@@ -8,6 +8,9 @@ def format_tool_result(
     if tool_name == "read_file":
         return format_read_file(result)
     
+    if tool_name == "fetch_url":
+        return format_fetch_url(result)
+    
     return str(result)
 
 
@@ -22,5 +25,9 @@ def format_list_documents(result):
 
 
 def format_read_file(result):
+    
+    return result.content[0].text
+
+def format_fetch_url(result):
     
     return result.content[0].text
