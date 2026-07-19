@@ -103,6 +103,26 @@ def route_tool(message: str):
         "query": "<search query>"
     }}
     
+    
+    ==================================================================
+    BROWSER MCP
+    ==================================================================
+    
+    7. fetch_url
+     - Read and extract the contents of a webpage.
+     
+     Arguments:
+     
+     {{
+         "url": "<website url>"
+     }}
+     
+     Rules:
+      - Always include the url argument.
+      - The url must be the exact URL provided by the user.
+      - Do not summarize or explain the webpage yourself.
+      - Only decide whether the fetch_url tool should be used.
+    
     ==================================================================
     GENERAL INSTRUCTIONS
     ==================================================================
@@ -368,6 +388,54 @@ def route_tool(message: str):
      - Always include the query argument.
      - Do not include any unnecessary arguments.
     
+    
+    ==================================================================
+    FETCH URL EXAMPLES
+    ==================================================================
+    
+    User:
+    Read https://example.com
+    
+    Output:
+    {{
+        "use_tool": true,
+        "tool": "fetch_url",
+        "arguments":
+        {{
+            "url": "https://example.com"
+        }}
+    }}
+    
+    --------------------------------------------------
+    User:
+    Explain this website:
+    https://fastapi.tiangolo.com/
+    
+    Output:
+    {{
+        "use_tool": true,
+        "tool": "fetch_url",
+        "arguments":
+        {{
+            "url": "https://fastapi.tiangolo.com/"
+        }}
+    }}
+    
+    --------------------------------------------------
+    User:
+    Summarize https://docs.python.org/3/
+    
+    Output:
+    {{
+        "use_tool": true,
+        "tool": "fetch_url",
+        "arguments":
+        {{
+            "url": "https://docs.pyton.org/3/"
+        }}
+    }}
+    
+    
     ==================================================================
     NON-TOOL EXAMPLES
     ==================================================================  
@@ -391,7 +459,7 @@ def route_tool(message: str):
     start = time.perf_counter()
     
     response = ollama.chat(
-        model = "qwen3:0.6b",
+        model = "qwen3:0.6b",    # Baby Qwen
         messages = [
             {
                 "role": "user",
