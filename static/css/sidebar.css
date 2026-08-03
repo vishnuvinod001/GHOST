@@ -1,0 +1,80 @@
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar {
+    padding: var(--space-lg);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-bottom: var(--space-lg);
+
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+
+    color: var(--text-primary);
+
+    letter-spacing: 0.08em;
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.navigation {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-sm);
+}
+
+/* =====================================================
+   NAVIGATION BUTTONS
+===================================================== */
+
+.navigation button {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    padding: var(--space-md);
+
+    border-radius: var(--radius-md);
+
+    color: var(--text-secondary);
+
+    transition: var(--transition-normal);
+}
+
+.navigation button:hover {
+    background: var(--bg-hover);
+
+    color: var(--text-primary);
+}
+
+.navigation button.active {
+    background: var(--accent-primary);
+
+    color: var(--bg-primary);
+
+    font-weight: 600;
+
+    box-shadow: var(--shadow-glow);
+}
