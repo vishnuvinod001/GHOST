@@ -1,0 +1,94 @@
+/* =====================================================
+   CHAT PANEL
+===================================================== */
+
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+
+    background: var(--bg-secondary);
+}
+
+/* =====================================================
+   CHAT HEADER
+===================================================== */
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: var(--space-lg);
+
+    border-bottom: 1px solid var(--border-color);
+
+    background: var(--bg-secondary);
+}
+
+.chat-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* =====================================================
+   CHAT HISTORY
+===================================================== */
+
+#chat-history {
+    flex: 1;
+
+    padding: var(--space-lg);
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+/* =====================================================
+   CHAT INPUT
+===================================================== */
+
+.chat-input {
+    display: flex;
+    gap: var(--space-md);
+
+    padding: var(--space-lg);
+
+    border-top: 1px solid var(--border-color);
+
+    background: var(--bg-secondary);
+}
+
+.chat-input input {
+    flex: 1;
+
+    padding: var(--space-md);
+
+    background: var(--bg-tertiary);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: var(--radius-md);
+
+    color: var(--text-primary);
+}
+
+.chat-input button {
+    padding: var(--space-md) var(--space-lg);
+
+    border-radius: var(--radius-md);
+
+    background: var(--accent-primary);
+
+    color: var(--bg-primary);
+
+    font-weight: 600;
+
+    transition: var(--transition-normal);
+}
+
+.chat-input button:hover {
+    box-shadow: var(--shadow-glow);
+}
