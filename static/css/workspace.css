@@ -1,0 +1,89 @@
+/* =====================================================
+   WORKSPACE
+===================================================== */
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+
+  background: var(--bg-primary);
+}
+
+/* =====================================================
+   PAGE HEADER
+===================================================== */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: var(--space-lg);
+
+  border-bottom: 1px solid var(--border-color);
+
+  background: var(--bg-secondary);
+
+  flex-shrink: 0;
+}
+
+.page-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+
+  color: var(--text-primary);
+}
+
+/* =====================================================
+   PAGE CONTENT
+===================================================== */
+
+.page-content {
+  flex: 1;
+
+  padding: var(--space-xl);
+
+  overflow-y: auto;
+}
+
+/* =====================================================
+   WELCOME SECTION
+===================================================== */
+
+.page-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+
+  color: var(--text-primary);
+
+  margin-bottom: var(--space-md);
+}
+
+.page-content p {
+  font-size: 1rem;
+  line-height: 1.7;
+
+  color: var(--text-secondary);
+}
+
+/* =====================================================
+   CONTENT CONTAINER
+===================================================== */
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-xl);
+}
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+.section {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-lg);
+}
