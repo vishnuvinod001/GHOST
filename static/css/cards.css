@@ -3,15 +3,15 @@
 ===================================================== */
 
 .card {
-    background: var(--bg-secondary);
+  background: var(--bg-secondary);
 
-    border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color);
 
-    border-radius: var(--radius-lg);
+  border-radius: var(--radius-lg);
 
-    padding: var(--space-lg);
+  padding: var(--space-lg);
 
-    box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 /* =====================================================
@@ -19,12 +19,12 @@
 ===================================================== */
 
 .card-title {
-    margin-bottom: var(--space-md);
+  margin-bottom: var(--space-md);
 
-    color: var(--text-primary);
+  color: var(--text-primary);
 
-    font-size: 1.2rem;
-    font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 /* =====================================================
@@ -32,7 +32,17 @@
 ===================================================== */
 
 .card-body {
-    color: var(--text-secondary);
+  color: var(--text-secondary);
 
-    line-height: 1.7;
+  line-height: 1.7;
+}
+
+/* =====================================================
+   CARD HOVER
+===================================================== */
+
+.card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: var(--shadow-md);
 }

@@ -1,0 +1,106 @@
+/* =====================================================
+   OVERVIEW
+===================================================== */
+
+.overview {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-xl);
+}
+
+/* =====================================================
+   HERO CARD
+===================================================== */
+
+.hero-card {
+  background: var(--bg-secondary);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-lg);
+
+  padding: var(--space-xl);
+
+  box-shadow: var(--shadow-md);
+}
+
+.hero-card h1 {
+  font-size: 2rem;
+  font-weight: 700;
+
+  margin-bottom: var(--space-sm);
+}
+
+.hero-card p {
+  margin-bottom: var(--space-lg);
+
+  color: var(--text-secondary);
+}
+
+/* =====================================================
+   DAILY BRIEF
+===================================================== */
+
+.daily-brief h3 {
+  margin-bottom: var(--space-md);
+}
+
+.daily-brief ul {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-sm);
+}
+
+.daily-brief li {
+  color: var(--text-secondary);
+}
+
+/* =====================================================
+   STATS GRID
+===================================================== */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: var(--space-lg);
+}
+
+.stats-grid .card {
+  text-align: center;
+}
+
+.stats-grid h3 {
+  margin-bottom: var(--space-sm);
+
+  color: var(--text-secondary);
+}
+
+.stats-grid p {
+  font-size: 2rem;
+  font-weight: 700;
+
+  color: var(--accent-primary);
+}
+
+/* =====================================================
+   RECENT ACTIVITY
+===================================================== */
+
+.recent-activity ul,
+.system-status ul {
+  margin-top: var(--space-md);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-sm);
+}
+
+.recent-activity li,
+.system-status li {
+  color: var(--text-secondary);
+}
