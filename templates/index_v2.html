@@ -20,14 +20,14 @@
     <link rel="stylesheet" href="/static/css/animations.css">
     <link rel="stylesheet" href="/static/css/responsive.css">
 
-    
+
 </head>
 
 <body>
 
     <div class="app">
 
-        <aside class="" sidebar>
+        <aside class="sidebar">
 
             <div class="logo">
                 <h1>GHOST</h1>
@@ -35,13 +35,33 @@
 
             <nav class="navigation">
 
-                <button>Overview</button>
-                <button>Knowledge</button>
-                <button>Files</button>
-                <button>Tasks</button>
-                <button>Brain</button>
-                <button>Developer</button>
-                <button>Settings</button>
+                <button class="nav-button active" data-page="overview">
+                    Overview
+                </button>
+
+                <button class="nav-button" data-page="knowledge">
+                    Knowledge
+                </button>
+
+                <button class="nav-button" data-page="files">
+                    Files
+                </button>
+
+                <button class="nav-button" data-page="tasks">
+                    Tasks
+                </button>
+
+                <button class="nav-button" data-page="brain">
+                    Brain
+                </button>
+
+                <button class="nav-button" data-page="developer">
+                    Developer
+                </button>
+
+                <button class="nav-button" data-page="settings">
+                    Settings
+                </button>
 
             </nav>
 
@@ -53,7 +73,7 @@
                 <h2>Overview</h2>
             </header>
 
-            <section class="page-content">
+            <section id="page-content" class="page-content">
 
                 <div class="overview">
 
@@ -160,6 +180,7 @@
 
     </div>
 
+    <script src="/static/js/navigation.js"></script>
     <script src="/static/js/app.js"></script>
 
 </body>
