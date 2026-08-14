@@ -156,20 +156,100 @@ const knowledgeHTML = `
 //--------------------------------------------------------------
 
 const filesHTML = `
-    <h1>Files</h1>
+
+<div class="files-page">
+
+    <section class="files-header">
+
+        <h1>Files</h1>
+
+        <p>
+            Browse and manage files using Filesystem MCP.
+        </p>
+
+    </section>
+
+    <section class="files-stats">
+
+        <div class="card">
+            <h3>Total Files</h3>
+            <p>124</p>
+        </div>
+
+        <div class="card">
+            <h3>Folders</h3>
+            <p>18</p>
+        </div>
+
+        <div class="card">
+            <h3>Recent Changes</h3>
+            <p>12</p>
+        </div>
+
+        <div class="card">
+            <h3>Status</h3>
+            <p>Ready</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Recent Files</h2>
+
+        <ul>
+            <li>main.py</li>
+            <li>knowledge.db</li>
+            <li>notes.md</li>
+        </ul>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Filesystem MCP</h2>
+
+        <ul>
+            <li>Read File</li>
+            <li>Create File</li>
+            <li>Edit File</li>
+            <li>Delete File</li>
+            <li>Search Files</li>
+        </ul>
+
+    </section>
+
+</div>
+
 `;
+
+//--------------------------------------------------------------
+// Tasks Page HTML
+//--------------------------------------------------------------
 
 const tasksHTML = `
     <h1>Tasks</h1>
 `;
 
+//--------------------------------------------------------------
+// Brain Page HTML
+//--------------------------------------------------------------
+
 const brainHTML = `
     <h1>Brain</h1>
 `;
 
+//--------------------------------------------------------------
+// Developer Page HTML
+//--------------------------------------------------------------
+
 const developerHTML = `
     <h1>Developer</h1>
 `;
+
+//--------------------------------------------------------------
+// Settings Page HTML
+//--------------------------------------------------------------
 
 const settingsHTML = `
     <h1>Settings</h1>
