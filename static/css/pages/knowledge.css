@@ -1,0 +1,29 @@
+.knowledge-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.knowledge-header h1 {
+  margin-bottom: var(--space-sm);
+}
+
+.knowledge-header p {
+  color: var(--text-secondary);
+}
+
+.knowledge-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+.knowledge-stats .card {
+  text-align: center;
+}
+
+.knowledge-stats p {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
