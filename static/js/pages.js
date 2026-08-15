@@ -236,7 +236,69 @@ const tasksHTML = `
 //--------------------------------------------------------------
 
 const brainHTML = `
-    <h1>Brain</h1>
+
+<div class="brain-page">
+
+    <section class="brain-header">
+
+        <h1>Brain</h1>
+
+        <p>
+            Memory, learning, projects and knowledge evolution.
+        </p>
+
+    </section>
+
+    <section class="brain-stats">
+
+        <div class="card">
+            <h3>Memories</h3>
+            <p>112</p>
+        </div>
+
+        <div class="card">
+            <h3>Projects</h3>
+            <p>4</p>
+        </div>
+
+        <div class="card">
+            <h3>Concepts</h3>
+            <p>27</p>
+        </div>
+
+        <div class="card">
+            <h3>Skills</h3>
+            <p>15</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Recent Memories</h2>
+
+        <ul>
+            <li>Filesystem MCP completed</li>
+            <li>Knowledge Base expanded</li>
+            <li>UI v2 development started</li>
+        </ul>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Timeline</h2>
+
+        <ul>
+            <li>Browser MCP completed</li>
+            <li>Filesystem MCP completed</li>
+            <li>Knowledge dashboard created</li>
+        </ul>
+
+    </section>
+
+</div>
+
 `;
 
 //--------------------------------------------------------------
