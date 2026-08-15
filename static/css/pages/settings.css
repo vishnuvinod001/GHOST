@@ -1,0 +1,23 @@
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.settings-header h1 {
+  margin-bottom: var(--space-sm);
+}
+
+.settings-header p {
+  color: var(--text-secondary);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+.settings-grid .card {
+  text-align: center;
+}

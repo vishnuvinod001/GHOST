@@ -440,5 +440,56 @@ const developerHTML = `
 //--------------------------------------------------------------
 
 const settingsHTML = `
-    <h1>Settings</h1>
+
+<div class="settings-page">
+
+    <section class="settings-header">
+
+        <h1>Settings</h1>
+
+        <p>
+            Configure models, memory and system behavior.
+        </p>
+
+    </section>
+
+    <section class="settings-grid">
+
+        <div class="card">
+            <h3>Model</h3>
+            <p>Qwen3 8B</p>
+        </div>
+
+        <div class="card">
+            <h3>Router</h3>
+            <p>Qwen3 0.6B</p>
+        </div>
+
+        <div class="card">
+            <h3>Memory</h3>
+            <p>Enabled</p>
+        </div>
+
+        <div class="card">
+            <h3>MCP</h3>
+            <p>Enabled</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Available Features</h2>
+
+        <ul>
+            <li>Memory</li>
+            <li>Knowledge Base</li>
+            <li>Filesystem MCP</li>
+            <li>Browser MCP</li>
+        </ul>
+
+    </section>
+
+</div>
+
 `;
