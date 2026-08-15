@@ -1,0 +1,29 @@
+.tasks-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.tasks-header h1 {
+  margin-bottom: var(--space-sm);
+}
+
+.tasks-header p {
+  color: var(--text-secondary);
+}
+
+.tasks-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+.tasks-stats .card {
+  text-align: center;
+}
+
+.tasks-stats p {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}

@@ -228,7 +228,71 @@ const filesHTML = `
 //--------------------------------------------------------------
 
 const tasksHTML = `
-    <h1>Tasks</h1>
+
+<div class="tasks-page">
+
+    <section class="tasks-header">
+
+        <h1>Tasks</h1>
+
+        <p>
+            Projects, todos, deadlines and automations.
+        </p>
+
+    </section>
+
+    <section class="tasks-stats">
+
+        <div class="card">
+            <h3>Total Tasks</h3>
+            <p>18</p>
+        </div>
+
+        <div class="card">
+            <h3>Active</h3>
+            <p>7</p>
+        </div>
+
+        <div class="card">
+            <h3>Completed</h3>
+            <p>11</p>
+        </div>
+
+        <div class="card">
+            <h3>Overdue</h3>
+            <p>0</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Current Tasks</h2>
+
+        <ul>
+            <li>Build Brain Page</li>
+            <li>Build Developer Page</li>
+            <li>Reconnect Chat</li>
+            <li>Connect Knowledge Backend</li>
+        </ul>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Upcoming Tasks</h2>
+
+        <ul>
+            <li>GitHub MCP</li>
+            <li>Terminal MCP</li>
+            <li>Voice Integration</li>
+            <li>Knowledge Graph</li>
+        </ul>
+
+    </section>
+
+</div>
+
 `;
 
 //--------------------------------------------------------------
