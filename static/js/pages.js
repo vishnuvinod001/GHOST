@@ -370,7 +370,69 @@ const brainHTML = `
 //--------------------------------------------------------------
 
 const developerHTML = `
-    <h1>Developer</h1>
+
+<div class="developer-page">
+
+    <section class="developer-header">
+
+        <h1>Developer</h1>
+
+        <p>
+            System diagnostics, MCP activity and model statistics.
+        </p>
+
+    </section>
+
+    <section class="developer-stats">
+
+        <div class="card">
+            <h3>Tool Calls</h3>
+            <p>124</p>
+        </div>
+
+        <div class="card">
+            <h3>MCP Servers</h3>
+            <p>2</p>
+        </div>
+
+        <div class="card">
+            <h3>Response Time</h3>
+            <p>1.2s</p>
+        </div>
+
+        <div class="card">
+            <h3>Status</h3>
+            <p>Online</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Recent Activity</h2>
+
+        <ul>
+            <li>Browser MCP executed</li>
+            <li>Filesystem MCP executed</li>
+            <li>Knowledge search completed</li>
+        </ul>
+
+    </section>
+
+    <section class="card">
+
+        <h2>System Logs</h2>
+
+        <ul>
+            <li>Router active</li>
+            <li>Qwen3 8B loaded</li>
+            <li>ChromaDB connected</li>
+        </ul>
+
+    </section>
+
+</div>
+
 `;
 
 //--------------------------------------------------------------
