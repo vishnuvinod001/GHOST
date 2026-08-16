@@ -734,7 +734,7 @@ def get_version():
 def home(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name = "index.html"
+        name = "index_v2.html"
     )
 
 # ==============================================================
