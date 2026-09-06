@@ -51,10 +51,10 @@ async function sendMessage() {
   document.getElementById("thinking").remove();
 
   chatHistory.innerHTML += `
-        <div class = "assistant-message">
-            ${data.reply}
-        </div>
-    `;
+    <div class="assistant-message">
+        ${data.reply.replace(/\n/g, "<br>")}
+    </div>
+  `;
 
   chatHistory.scrollTop = chatHistory.scrollHeight;
 }

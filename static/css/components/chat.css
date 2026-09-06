@@ -47,6 +47,44 @@
 }
 
 /* =====================================================
+   CHAT MESSAGES
+===================================================== */
+
+.user-message {
+    align-self: flex-end;
+
+    max-width: 80%;
+
+    padding: var(--space-md);
+
+    background: var(--accent-primary);
+
+    color: var(--bg-primary);
+
+    border-radius: var(--radius-lg);
+
+    word-wrap: break-word;
+}
+
+.assistant-message {
+    align-self: flex-start;
+
+    max-width: 80%;
+
+    padding: var(--space-md);
+
+    background: var(--bg-tertiary);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: var(--radius-lg);
+
+    color: var(--text-primary);
+
+    word-wrap: break-word;
+}
+
+/* =====================================================
    CHAT INPUT
 ===================================================== */
 
