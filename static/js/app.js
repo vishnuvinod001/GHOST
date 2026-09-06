@@ -31,10 +31,12 @@ async function sendMessage() {
   input.value = "";
 
   chatHistory.innerHTML += `
-        <div id="thinking">
-            Ghost is thinking...
-        </div>
-    `;
+    <div id="thinking" class="assistant-message thinking">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+  `;
 
   const response = await fetch("/chat", {
     method: "POST",
