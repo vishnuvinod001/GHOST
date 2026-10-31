@@ -1180,26 +1180,66 @@ def get_stats():
     
     local_cursor = conn.cursor()
     
-    local_cursor.execute("""
-                         SELECT COUNT(DISTINCT source)
-                         FROM chunks
-                         """)
+    local_cursor.execute("SELECT COUNT(DISTINCT source) FROM chunks")
     pdf_count = local_cursor.fetchone()[0]
     
-    local_cursor.execute("""
-                         SELECT COUNT(*)
-                         FROM chunks
-                         """)
+    local_cursor.execute("SELECT COUNT(*) FROM chunks")
     chunk_count = local_cursor.fetchone()[0]
     
-    local_cursor.execute("""
-                         SELECT COUNT(*)
-                         FROM tasks
-                         """)
+    local_cursor.execute("SELECT COUNT(*) FROM embeddings")
+    embedding_count = local_cursor.fetchone()[0]
+    
+    local_cursor.execute("SELECT COUNT(*) FROM tasks")
     task_count = local_cursor.fetchone()[0]
     
+    local_cursor.execute("SELECT COUNT(*) FROM tasks WHERE completed = 0")
+    active_task_count = local_cursor.fetchone()[0]
+    
+    local_cursor.execute("SELECT COUNT(*) FROM tasks WHERE completed = 1")
+    completed_task_count = local_cursor.fetchone()[0]
+    
+    local_cursor.execute("SELECT COUNT(*) FROM memories")
+    memory_count = local_cursor.fetchone()[0]
+    
     return {
-        "pdf_count" : pdf_count,
-        "chunk_count" : chunk_count,
-        "task_count" : task_count
+        "pdf_count": pdf_count,
+        "chunk_count": chunk_count,
+        "embedding_count": embedding_count,
+        "task_count": task_count,
+        "active_task_count": active_task_count,
+        "completed_task_count": completed_task_count,
+        "memory_count": memory_count
+    }
+
+
+@app.get("/memories")
+def get_memories():
+    local_cursor = conn.cursor()
+    local_cursor.execute("""
+        SELECT id, type, value
+        FROM memories
+        ORDER BY id DESC
+    """)
+    return [
+        {"id": row[0], "type": row[1], "value": row[2]}
+        for row in local_cursor.fetchall()
+    ]
+
+
+@app.get("/diagnostics")
+def get_diagnostics():
+    local_cursor = conn.cursor()
+    local_cursor.execute("SELECT COUNT(*) FROM chunks")
+    chunk_count = local_cursor.fetchone()[0]
+    local_cursor.execute("SELECT COUNT(*) FROM embeddings")
+    embedding_count = local_cursor.fetchone()[0]
+    
+    return {
+        "backend": "online",
+        "model": MODEL_NAME,
+        "faiss": "loaded" if faiss_index is not None else "empty",
+        "indexed_chunks": chunk_count,
+        "stored_embeddings": embedding_count,
+        "browser_mcp": "configured",
+        "filesystem_mcp": "configured"
     }
