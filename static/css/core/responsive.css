@@ -1,1 +1,48 @@
-@media(max-width:1280px){.app{grid-template-columns:220px minmax(0,1fr) 320px}.page-content{padding:26px}.metrics-grid{gap:10px}.metric-card{padding:15px}}@media(max-width:1050px){.app{grid-template-columns:72px minmax(0,1fr)}.chat-panel{display:none}.logo{justify-content:center;padding:16px 8px}.logo>div:last-child,.nav-section-label,.sidebar-footer span:last-child{display:none}.navigation{padding:18px 9px}.nav-button{justify-content:center;padding:0}.nav-button{font-size:0}.nav-indicator{width:7px;height:7px;flex-basis:7px}.page-content{padding:24px}.metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){body{overflow:auto}.app{height:100dvh;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) 39dvh}.sidebar{grid-row:1;min-height:58px;display:flex;flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--border-color)}.logo{min-height:58px;width:auto;border:0;justify-content:flex-start;padding:8px 12px}.logo-mark{width:30px;height:30px}.logo>div:last-child{display:block}.logo h1{font-size:13px}.logo span{display:none}.navigation{min-width:0;flex:1;padding:5px 8px;display:flex;flex-direction:row;justify-content:flex-end;gap:2px;overflow-x:auto}.nav-section-label{display:none}.nav-button{width:auto;min-width:37px;min-height:36px;padding:0 10px;font-size:0}.nav-indicator{width:6px;height:6px}.sidebar-footer{display:none}.workspace{grid-row:2;min-height:0}.page-header{min-height:62px;padding:12px 16px}.page-header h2{font-size:17px}.header-status{font-size:8px}.page-content{padding:18px 15px}.dashboard-page{gap:17px}.page-intro h1{font-size:27px}.metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metric-card{min-height:103px;padding:13px}.metric-value{font-size:24px}.content-panel{padding:16px}.chat-panel{grid-row:3;display:flex;min-height:0;border-left:0;border-top:1px solid var(--border-color)}.chat-header{min-height:54px;padding:9px 14px}.chat-input{padding:9px 12px}.chat-footnote{padding-bottom:7px}.overview-footer{flex-direction:column}}
+@media(max-width:1280px){
+  .app{grid-template-columns:220px minmax(0,1fr) 320px}
+  .page-content{padding:26px}
+  .metrics-grid{gap:10px}
+  .metric-card{padding:15px}
+}
+@media(max-width:1050px){
+  .app{grid-template-columns:184px minmax(0,1fr)}
+  .chat-panel{display:none}
+  .logo{padding:16px 14px}
+  .navigation{padding:18px 9px}
+  .nav-button{font-size:10px}
+  .page-content{padding:24px}
+  .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  body{overflow:auto}
+  .app{height:100dvh;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) 39dvh}
+  .sidebar{grid-row:1;min-height:58px;display:flex;flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--border-color)}
+  .logo{min-height:58px;width:auto;border:0;justify-content:flex-start;padding:8px 12px}
+  .logo-mark{width:30px;height:30px}
+  .logo>div:last-child{display:block}
+  .logo h1{font-size:13px}
+  .logo span{display:none}
+  .navigation{min-width:0;flex:1;padding:5px 7px;display:flex;flex-direction:row;justify-content:flex-end;gap:2px;overflow-x:auto}
+  .nav-section-label{display:none}
+  .nav-button{width:auto;min-width:max-content;min-height:36px;padding:0 7px;font-size:8px;white-space:nowrap}
+  .nav-indicator{display:none}
+  .sidebar-footer{display:none}
+  .workspace{grid-row:2;min-height:0}
+  .page-header{min-height:62px;padding:12px 16px}
+  .page-header h2{font-size:17px}
+  .header-status{font-size:8px}
+  .page-content{padding:18px 15px}
+  .dashboard-page{gap:17px}
+  .page-intro h1{font-size:27px}
+  .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .metric-card{min-height:103px;padding:13px}
+  .metric-value{font-size:24px}
+  .content-panel{padding:16px}
+  .chat-panel{grid-row:3;display:flex;min-height:0;border-left:0;border-top:1px solid var(--border-color)}
+  .chat-header{min-height:54px;padding:9px 14px}
+  .chat-input{padding:9px 12px}
+  .chat-footnote{padding-bottom:7px}
+  .overview-footer{flex-direction:column}
+  .upload-form{align-items:flex-start;flex-direction:column}
+  .upload-form input{max-width:100%;width:100%}
+}
