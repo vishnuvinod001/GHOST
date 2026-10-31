@@ -1,89 +1,20 @@
-/* =====================================================
-   WORKSPACE
-===================================================== */
-
-.workspace {
-  display: flex;
-  flex-direction: column;
-
-  background: var(--bg-primary);
-}
-
-/* =====================================================
-   PAGE HEADER
-===================================================== */
-
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: var(--space-lg);
-
-  border-bottom: 1px solid var(--border-color);
-
-  background: var(--bg-secondary);
-
-  flex-shrink: 0;
-}
-
-.page-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-
-  color: var(--text-primary);
-}
-
-/* =====================================================
-   PAGE CONTENT
-===================================================== */
-
-.page-content {
-  flex: 1;
-
-  padding: var(--space-xl);
-
-  overflow-y: auto;
-}
-
-/* =====================================================
-   WELCOME SECTION
-===================================================== */
-
-.page-content h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-
-  color: var(--text-primary);
-
-  margin-bottom: var(--space-md);
-}
-
-.page-content p {
-  font-size: 1rem;
-  line-height: 1.7;
-
-  color: var(--text-secondary);
-}
-
-/* =====================================================
-   CONTENT CONTAINER
-===================================================== */
-
-.content-wrapper {
-  display: flex;
-  flex-direction: column;
-
-  gap: var(--space-xl);
-}
-
-/* =====================================================
-   SECTION
-===================================================== */
-
-.section {
-  display: flex;
-  flex-direction: column;
-
-  gap: var(--space-lg);
-}
+.page-header { min-height: 88px; padding: 18px 34px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--border-color); background: rgba(15,22,31,.74); }
+.page-header h2 { margin: 4px 0 0; font: 600 21px "Space Grotesk", sans-serif; letter-spacing: -.03em; }
+.header-kicker { color: var(--text-muted); font-size: 9px; font-weight: 700; letter-spacing: .2em; }
+.header-status { display: flex; align-items: center; gap: 9px; color: var(--text-secondary); font-size: 9px; font-weight: 700; letter-spacing: .14em; }
+.page-content { padding: 34px; }
+.dashboard-page { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.page-intro { position: relative; padding: 6px 0 8px; }
+.eyebrow { color: var(--accent-primary); font-size: 9px; font-weight: 700; letter-spacing: .2em; }
+.page-intro h1 { margin: 12px 0 9px; color: var(--text-primary); font: 600 clamp(27px,3vw,38px) "Space Grotesk",sans-serif; letter-spacing: -.045em; }
+.page-intro p { max-width: 650px; margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.75; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+.content-panel { min-width: 0; padding: 22px; border: 1px solid var(--border-color); border-radius: 15px; background: linear-gradient(145deg,rgba(22,32,44,.9),rgba(17,25,35,.92)); box-shadow: 0 12px 35px rgba(0,0,0,.12); }
+.panel-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 17px; }
+.panel-heading h2 { margin: 0; font: 600 14px "Space Grotesk",sans-serif; letter-spacing: -.015em; }
+.overview-footer { display: flex; justify-content: space-between; gap: 12px; color: var(--text-muted); font-size: 10px; letter-spacing: .06em; }
+.loading-state { padding: 42px 0; color: var(--text-secondary); font-size: 12px; letter-spacing: .08em; }
+.error-panel { border-color: rgba(242,119,119,.3); }
+.error-panel h2 { margin: 0 0 8px; font: 600 16px "Space Grotesk",sans-serif; }
+.error-panel p { margin: 0 0 16px; color: var(--text-secondary); font-size: 12px; }
+.subtle-note { color: var(--text-muted); font-size: 10px; line-height: 1.7; }
