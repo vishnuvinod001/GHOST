@@ -725,9 +725,10 @@ def save_memory(
 @app.get("/version")
 def get_version():
     return {
-        "version" : GHOST_VERSION,
-        "model" : MODEL_NAME
-        }
+        "version": GHOST_VERSION,
+        "model": MODEL_NAME,
+        "router_model": "qwen3:0.6b"
+    }
 
 
 @app.get("/", response_class=HTMLResponse)
