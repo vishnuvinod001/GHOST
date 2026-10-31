@@ -1,80 +1,13 @@
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
-.sidebar {
-    padding: var(--space-lg);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
-}
-
-/* =====================================================
-   LOGO
-===================================================== */
-
-.logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding-bottom: var(--space-lg);
-
-    border-bottom: 1px solid var(--border-color);
-}
-
-.logo h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-
-    color: var(--text-primary);
-
-    letter-spacing: 0.08em;
-}
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-.navigation {
-    display: flex;
-    flex-direction: column;
-
-    gap: var(--space-sm);
-}
-
-/* =====================================================
-   NAVIGATION BUTTONS
-===================================================== */
-
-.navigation button {
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-
-    padding: var(--space-md);
-
-    border-radius: var(--radius-md);
-
-    color: var(--text-secondary);
-
-    transition: var(--transition-normal);
-}
-
-.navigation button:hover {
-    background: var(--bg-hover);
-
-    color: var(--text-primary);
-}
-
-.navigation button.active {
-    background: var(--accent-primary);
-
-    color: var(--bg-primary);
-
-    font-weight: 600;
-
-    box-shadow: var(--shadow-glow);
-}
+.logo { min-height: 94px; padding: 20px 22px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color); }
+.logo-mark, .chat-avatar { width: 35px; height: 35px; display: grid; place-items: center; border: 1px solid rgba(83,192,220,.45); border-radius: 10px; background: linear-gradient(145deg,rgba(43,145,174,.25),rgba(101,93,179,.2)); color: #a5e5f0; font: 600 18px "Space Grotesk",sans-serif; box-shadow: inset 0 0 18px rgba(80,184,219,.08); }
+.logo h1 { margin: 0; font: 700 17px "Space Grotesk",sans-serif; letter-spacing: .12em; }
+.logo span { display: block; margin-top: 4px; color: var(--text-muted); font-size: 8px; letter-spacing: .14em; }
+.navigation { padding: 24px 13px; display: flex; flex-direction: column; gap: 5px; }
+.nav-section-label { margin: 12px 10px 8px; color: #627384; font-size: 8px; font-weight: 700; letter-spacing: .18em; }
+.nav-button { position: relative; width: 100%; min-height: 42px; padding: 0 12px; display: flex; align-items: center; gap: 11px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: #91a0af; font-size: 11px; text-align: left; transition: color .2s ease, background .2s ease, border-color .2s ease; }
+.nav-button:hover { background: rgba(90,127,151,.1); color: var(--text-primary); }
+.nav-button.active { border-color: rgba(79,184,211,.15); background: linear-gradient(90deg,rgba(62,165,193,.14),rgba(62,165,193,.035)); color: #d8f3f7; }
+.nav-indicator { width: 5px; height: 5px; border-radius: 50%; background: #4a5a69; }
+.nav-button.active .nav-indicator { background: var(--accent-primary); box-shadow: 0 0 9px rgba(80,190,220,.7); }
+.sidebar-footer { margin-top: auto; padding: 17px 22px; display: flex; align-items: center; gap: 9px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 9px; }
+.online-indicator { width: 6px; height: 6px; display: inline-block; flex: 0 0 6px; border-radius: 50%; background: #54c6a1; animation: pulseDot 2.5s ease-in-out infinite; }
