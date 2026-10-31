@@ -141,39 +141,43 @@ Tool requests currently follow a separate prompt path: the tool result is suppli
 
 ## Frontend — UI v2
 
-The root route (`GET /`) currently serves `templates/index_v2.html`. The older interface remains in `templates/index.html`.
+The root route (`GET /`) serves `templates/index_v2.html`. The legacy interface remains in `templates/index.html` with its original `static/script.js` implementation.
 
 The UI v2 shell has three persistent regions:
 
-- **Sidebar:** navigation between workspace pages.
-- **Workspace:** the selected page.
-- **Chat panel:** persistent chat interface.
+- **Sidebar:** navigation between the seven workspace pages.
+- **Workspace:** page-specific dashboards populated from the FastAPI API.
+- **Chat panel:** persistent chat interface connected to the existing `POST /chat` route.
 
 ### Workspace Pages
 
 | Page | Current implementation |
 |---|---|
-| Overview | Static welcome, summary cards, activity, and system-status content |
-| Knowledge | Static document, chunk, and embedding summaries |
-| Files | Static file summary and Filesystem MCP tool list |
-| Tasks | Static task summary and example task lists |
-| Brain | Static memory/project summary and timeline |
-| Developer | Static tool, server, and system-status summaries |
-| Settings | Static model and feature summary |
+| Overview | Live document, memory, task, and knowledge counts plus backend/index/MCP configuration status |
+| Knowledge | Indexed documents, chunk and embedding counts, and FAISS index state |
+| Files | PDF document listing, PDF upload, and document deletion through the existing knowledge API |
+| Tasks | SQLite-backed task listing, creation, completion toggling, and deletion |
+| Brain | Saved memory records and counts grouped by memory type |
+| Developer | Backend/model diagnostics and storage/index counts |
+| Settings | Read-only view of the model, router, version, index, and MCP configuration exposed by the backend |
 
-Navigation is implemented client-side by replacing the workspace content with page templates from `static/js/pages.js`. Chat submission is handled in `static/js/app.js` and sends requests to the FastAPI backend.
+Page navigation loads the corresponding page module from `static/js/`. Shared rendering helpers live in `static/js/pages.js`; API requests are centralized in `static/js/api.js`; navigation and page actions are managed by `static/js/navigation.js`. Chat remains in `static/js/app.js` and sends messages to the existing `POST /chat` route.
 
-**Frontend status:** the shell, navigation, page layouts, styling, and chat request path exist. The workspace dashboards currently contain hardcoded sample values and are not yet connected to live backend statistics or feature-specific APIs. Several planned page-specific JavaScript files exist but are currently empty.
+**Frontend status:** UI v2 is connected to the current backend data for its available features. Dashboard counts are sourced from SQLite-backed API responses rather than sample values. The page modules are loaded by `templates/index_v2.html`. Non-card page sections use restrained reveal motion; metric cards are not animated. Chat rendering uses text nodes so user and model text is not inserted as raw HTML.
+
+**Scope note:** the Files page manages indexed PDF documents, not arbitrary files in the Filesystem MCP workspace. The backend does not yet expose a general workspace file-list endpoint. Developer diagnostics report MCP configuration, not a live process-health probe. Settings are intentionally read-only because model switching and settings mutation APIs are not implemented.
 
 ### Frontend Structure
 
-- `static/css/core/`: design tokens, global styles, animations, and responsive rules.
+- `static/css/core/`: design tokens, global styles, motion, and responsive rules.
 - `static/css/layout/`: application layout.
-- `static/css/components/`: sidebar, workspace, chat, and reusable cards.
+- `static/css/components/`: sidebar, workspace, chat, and reusable data cards.
 - `static/css/pages/`: page-specific styles.
-- `static/js/pages.js`: HTML templates for workspace pages.
-- `static/js/navigation.js`: client-side page switching.
-- `static/js/app.js`: chat input, API request, and message rendering.
+- `static/js/api.js`: shared GET, POST, and multipart-upload requests.
+- `static/js/pages.js`: safe rendering helpers for page content.
+- `static/js/overview.js`, `knowledge.js`, `files.js`, `tasks.js`, `brain.js`, `developer.js`, `settings.js`: page-specific data loading and rendering.
+- `static/js/navigation.js`: client-side navigation, motion observation, and delegated page actions.
+- `static/js/app.js`: chat input, request to `POST /chat`, and safe message rendering.
 
 ---
 
@@ -205,10 +209,17 @@ GHOST/
     │   ├── components/
     │   └── pages/
     ├── js/
+    │   ├── api.js
     │   ├── app.js
+    │   ├── brain.js
+    │   ├── developer.js
+    │   ├── files.js
+    │   ├── knowledge.js
     │   ├── navigation.js
+    │   ├── overview.js
     │   ├── pages.js
-    │   └── page-specific modules (work in progress)
+    │   ├── settings.js
+    │   └── tasks.js
     ├── script.js
     └── style.css
 ```
@@ -224,17 +235,19 @@ The following routes are currently defined in `main.py`.
 | Method | Endpoint | Purpose |
 |---|---|---|
 | GET | `/` | Serve the UI v2 page |
-| GET | `/version` | Return backend version and primary model |
+| GET | `/version` | Return backend version, primary model, and configured router model |
 | POST | `/chat` | Process a chat message and return a reply |
 | POST | `/clear` | Clear stored chat history |
 | POST | `/upload-pdf` | Upload, extract, chunk, and embed a PDF |
 | GET | `/documents` | List indexed document filenames |
 | POST | `/delete-document` | Delete a document and its indexed chunks |
+| GET | `/memories` | List stored long-term memory records |
 | POST | `/add-task` | Add a task |
 | GET | `/tasks` | List tasks |
 | POST | `/complete-task` | Toggle a task's completion state |
 | POST | `/delete-task` | Delete a task |
-| GET | `/stats` | Return document, chunk, and task counts |
+| GET | `/stats` | Return document, chunk, embedding, memory, and task counts |
+| GET | `/diagnostics` | Return backend, FAISS, and MCP configuration status |
 
 ### Request Examples
 
@@ -321,9 +334,9 @@ Make sure Ollama is running and the required models are available before startin
 
 The following are visible gaps between the current code and the broader GHOST vision:
 
-- Connect UI v2 dashboard cards to live backend data instead of hardcoded sample values.
-- Build functional Knowledge, Files, Tasks, Brain, Developer, and Settings interactions.
-- Split frontend behavior into the planned page-specific JavaScript modules.
+- Add a general workspace file-list API so the Files page can browse arbitrary Filesystem MCP content, not only indexed PDFs.
+- Add live MCP process-health checks instead of reporting configuration only.
+- Add backend settings endpoints if runtime model switching and editable system preferences are required.
 - Resolve the `search_file` / `search_files` MCP tool-name mismatch.
 - Complete consistent formatting and handling for all MCP tool results.
 - Add a dependency manifest with pinned, tested package versions.
